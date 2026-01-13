@@ -109,6 +109,7 @@
                                          Width="70" 
                                          FontSize="11" 
                                          Text="0"
+                                         TextChanged="OnXPosChanged"
                                          Margin="0,0,0,6"/>
                                 <CheckBox Name="XLock" 
                                           Grid.Row="0" Grid.Column="2"
