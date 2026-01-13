@@ -42,6 +42,7 @@
         <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.2.4" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.4" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.4" />
+        <PackageReference Include="Microsoft.Win32.SystemEvents" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="SharpHook" Version="5.3.8" />
         <PackageReference Include="SimWinMouse" Version="1.0.3" />

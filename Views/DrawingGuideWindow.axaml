@@ -2,12 +2,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="240"
+        mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="380"
         x:Class="AutoArt.Views.DrawingGuideWindow"
         Title="AutoArt - Drawing Guide"
         
-        Width="360"
-        Height="240"
+        Width="380"
+        Height="380"
         CanResize="False"
         
         WindowStartupLocation="CenterScreen"
@@ -20,10 +20,10 @@
     <Border CornerRadius="12" 
             BorderBrush="{DynamicResource ThemeCardBorder}" 
             BorderThickness="1" 
-            Padding="24"
+            Padding="20"
             Background="#FCFCFC"
             BoxShadow="0 8 32 0 #30000000">
-        <StackPanel Spacing="16">
+        <StackPanel Spacing="14">
             
             <!-- Header -->
             <StackPanel Spacing="6">
