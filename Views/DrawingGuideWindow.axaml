@@ -2,64 +2,118 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="200"
+        mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="380"
         x:Class="AutoArt.Views.DrawingGuideWindow"
         Title="AutoArt - Drawing Guide"
         
-        Width="320"
-        Height="200"
+        Width="380"
+        Height="380"
         CanResize="False"
         
         WindowStartupLocation="CenterScreen"
         
         SystemDecorations="None"
         TransparencyLevelHint="AcrylicBlur"
-        Background="#E0202020"
+        Background="#F0FFFFFF"
         Topmost="True">
     
-    <Border CornerRadius="8" BorderBrush="#40FFFFFF" BorderThickness="1" Padding="16">
-        <StackPanel Spacing="12">
+    <Border CornerRadius="12" 
+            BorderBrush="{DynamicResource ThemeCardBorder}" 
+            BorderThickness="1" 
+            Padding="20"
+            Background="#FCFCFC"
+            BoxShadow="0 8 32 0 #30000000">
+        <StackPanel Spacing="14">
             
             <!-- Header -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
-                <TextBlock Text="AutoArt" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                <TextBlock Text="Drawing Guide" FontSize="18" Foreground="#80FFFFFF"/>
+            <StackPanel Spacing="6">
+                <TextBlock Text="✨ Drawing Guide" 
+                           FontSize="20" FontWeight="Bold" 
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource ThemeForegroundColor}"/>
+                <TextBlock Text="Your creative assistant" 
+                           FontSize="13" 
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource ThemeSecondaryForeground}"/>
             </StackPanel>
             
-            <!-- Current Layer Info -->
-            <Border Background="#30FFFFFF" CornerRadius="6" Padding="12">
+            <!-- Current Layer Info Card -->
+            <Border Background="{DynamicResource ThemeCardBackground}" 
+                    BorderBrush="{DynamicResource ThemeCardBorder}"
+                    BorderThickness="1"
+                    CornerRadius="10" 
+                    Padding="16"
+                    BoxShadow="0 2 8 0 #08000000">
                 <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
                     
-                    <!-- Color Swatch -->
-                    <Border Name="ColorSwatch" Grid.RowSpan="2" Width="48" Height="48" CornerRadius="6"
-                            Background="Gray" BorderBrush="White" BorderThickness="2" Margin="0,0,12,0"/>
+                    <!-- Large Beautiful Color Swatch -->
+                    <Border Name="ColorSwatch" 
+                            Grid.RowSpan="2" 
+                            Width="64" Height="64" 
+                            CornerRadius="12"
+                            Background="Gray" 
+                            BorderBrush="{DynamicResource ThemeAccentPrimary}" 
+                            BorderThickness="3" 
+                            Margin="0,0,16,0"
+                            BoxShadow="0 4 12 0 #20000000"/>
                     
                     <!-- Layer Info -->
-                    <TextBlock Name="LayerText" Grid.Row="0" Grid.Column="1" 
-                               Text="Layer 1 of 12" FontSize="16" FontWeight="Bold" Foreground="White"
-                               VerticalAlignment="Bottom" Margin="0,0,0,4"/>
-                    <TextBlock Name="ColorHexText" Grid.Row="1" Grid.Column="1" 
-                               Text="#FFFFFF" FontSize="14" Foreground="#A0FFFFFF"
+                    <TextBlock Name="LayerText" 
+                               Grid.Row="0" Grid.Column="1" 
+                               Text="Layer 1 of 12" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="{DynamicResource ThemeForegroundColor}"
+                               VerticalAlignment="Bottom" 
+                               Margin="0,0,0,6"/>
+                    <TextBlock Name="ColorHexText" 
+                               Grid.Row="1" Grid.Column="1" 
+                               Text="#FFFFFF" 
+                               FontSize="16" 
+                               FontFamily="Consolas"
+                               Foreground="{DynamicResource ThemeSecondaryForeground}"
                                VerticalAlignment="Top"/>
                 </Grid>
             </Border>
             
-            <!-- Instructions -->
-            <TextBlock Name="InstructionText" 
-                       Text="Select this color in your drawing app, then press SHIFT when ready."
-                       TextWrapping="Wrap" TextAlignment="Center" FontSize="12" Foreground="#C0FFFFFF"/>
+            <!-- Clear CTA Instructions -->
+            <Border Background="{DynamicResource ThemePastelBlue}"
+                    CornerRadius="8" 
+                    Padding="14">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="🎯 Ready to Draw" 
+                               FontSize="13" FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               Foreground="{DynamicResource ThemeForegroundColor}"/>
+                    <TextBlock Name="InstructionText" 
+                               Text="Select this color in your drawing app, then press SHIFT when ready."
+                               TextWrapping="Wrap" 
+                               TextAlignment="Center" 
+                               FontSize="12" 
+                               Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                </StackPanel>
+            </Border>
             
             <!-- Progress Indicator -->
-            <ProgressBar Name="DrawingProgress" Height="4" IsVisible="False" 
-                         IsIndeterminate="True" Foreground="#4CAF50"/>
+            <ProgressBar Name="DrawingProgress" 
+                         Height="4" 
+                         IsVisible="False" 
+                         IsIndeterminate="True" 
+                         Foreground="{DynamicResource ThemeAccentSuccess}"
+                         CornerRadius="2"/>
             
-            <!-- Buttons -->
-            <Grid ColumnDefinitions="*,8,*">
-                <Button Name="SkipButton" Grid.Column="0" Content="Skip Layer" 
-                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <Button Name="StopButton" Grid.Column="2" Content="Stop Session" 
-                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-                        Background="#C62828"/>
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,12,*">
+                <Button Name="SkipButton" 
+                        Grid.Column="0" 
+                        Content="Skip Layer" 
+                        HorizontalAlignment="Stretch" 
+                        HorizontalContentAlignment="Center"/>
+                <Button Name="StopButton" 
+                        Grid.Column="2" 
+                        Classes="Danger"
+                        Content="Stop Session" 
+                        HorizontalAlignment="Stretch" 
+                        HorizontalContentAlignment="Center"/>
             </Grid>
             
         </StackPanel>

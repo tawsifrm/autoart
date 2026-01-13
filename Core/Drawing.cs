@@ -18,12 +18,12 @@ public static class Drawing
 
     public static int Interval = 10000;
     public static int ClickDelay = 1000; // Milliseconds, please multiply by 10000
-    
+
     /// <summary>
     ///  0 indicates DFS, 1 indicates Edge-Following
     /// </summary>
     public static byte ChosenAlgorithm = 0;
-    
+
     public static bool NoRescan = false;
     public static bool IsDrawing;
     public static bool SkipRescan;
@@ -60,16 +60,16 @@ public static class Drawing
         var bitPtr = (byte*)bitmap.GetPixels().ToPointer();
 
         for (var y = 0; y < bitmap.Height; y++)
-        for (var x = 0; x < bitmap.Width; x++)
-        {
-            var redByte = *bitPtr++;
-            bitPtr++;
-            bitPtr++;
-            bitPtr++;
+            for (var x = 0; x < bitmap.Width; x++)
+            {
+                var redByte = *bitPtr++;
+                bitPtr++;
+                bitPtr++;
+                bitPtr++;
 
-            _pixelArray[x, y] = redByte < 127 ? (byte)1 : (byte)0;
-            if (redByte < 127) _totalScanSize += 1;
-        }
+                _pixelArray[x, y] = redByte < 127 ? (byte)1 : (byte)0;
+                if (redByte < 127) _totalScanSize += 1;
+            }
 
         return _pixelArray;
     }
@@ -94,11 +94,11 @@ public static class Drawing
             }
             data.Add(column);
         }
-        
+
         List<Dictionary<Vector2, int>> chunks = new();
         void Search(int x, int y)
         {
-            var stack = new Stack<(int, int)>(); 
+            var stack = new Stack<(int, int)>();
             stack.Push((x, y));
             data[x][y] = 2; // Mark as visited
 
@@ -106,43 +106,43 @@ public static class Drawing
 
             while (stack.Count > 0)
             {
-                (x, y) = stack.Pop(); 
+                (x, y) = stack.Pop();
 
                 // Left
-                if (x > 0 && data[x - 1][y] == 1) 
+                if (x > 0 && data[x - 1][y] == 1)
                 {
                     data[x - 1][y] = 2;
                     stack.Push((x - 1, y));
                     chunk[new Vector2(x - 1, y)] = 1;
                 }
-                else if(x > 0 && data[x - 1][y] == 0) chunk[new Vector2(x , y)] = 2;
+                else if (x > 0 && data[x - 1][y] == 0) chunk[new Vector2(x, y)] = 2;
 
                 // Right
-                if (x < srcBitmap.Width - 1 && data[x + 1][y] == 1) 
+                if (x < srcBitmap.Width - 1 && data[x + 1][y] == 1)
                 {
                     data[x + 1][y] = 2;
                     stack.Push((x + 1, y));
                     chunk[new Vector2(x + 1, y)] = 1;
                 }
-                else if(x < srcBitmap.Width - 1 && data[x + 1][y] == 0) chunk[new Vector2(x , y)] = 2;
+                else if (x < srcBitmap.Width - 1 && data[x + 1][y] == 0) chunk[new Vector2(x, y)] = 2;
 
                 // Up
-                if (y > 0 && data[x][y - 1] == 1) 
+                if (y > 0 && data[x][y - 1] == 1)
                 {
                     data[x][y - 1] = 2;
                     stack.Push((x, y - 1));
                     chunk[new Vector2(x, y - 1)] = 1;
                 }
-                else if(y > 0 && data[x][y - 1] == 0) chunk[new Vector2(x , y)] = 2;
+                else if (y > 0 && data[x][y - 1] == 0) chunk[new Vector2(x, y)] = 2;
 
                 // Down
-                if (y < srcBitmap.Height - 1 && data[x][y + 1] == 1) 
+                if (y < srcBitmap.Height - 1 && data[x][y + 1] == 1)
                 {
                     data[x][y + 1] = 2;
                     stack.Push((x, y + 1));
                     chunk[new Vector2(x, y + 1)] = 1;
                 }
-                else if(y < srcBitmap.Height - 1 && data[x][y + 1] == 0) chunk[new Vector2(x , y)] = 2;
+                else if (y < srcBitmap.Height - 1 && data[x][y + 1] == 0) chunk[new Vector2(x, y)] = 2;
 
                 // Top-Left
                 if (x > 0 && y > 0 && data[x - 1][y - 1] == 1)
@@ -187,15 +187,15 @@ public static class Drawing
             {
                 if (data[x][y] == 1)
                 {
-                    Search(x,y);
+                    Search(x, y);
                 }
             }
-        
-        chunks.Sort(delegate(Dictionary<Vector2, int> x, Dictionary<Vector2, int> y)
+
+        chunks.Sort(delegate (Dictionary<Vector2, int> x, Dictionary<Vector2, int> y)
         {
             return y.Count.CompareTo(x.Count);
         });
-        
+
         return chunks;
     }
 
@@ -240,7 +240,7 @@ public static class Drawing
 
         return DFS(start, data, relativeDirections);
     }
-    
+
     private static List<Vector2> EdgeTraversal(Vector2 start, byte[,] data, Vector2[] directions)
     {
         List<Vector2> path = new();
@@ -392,7 +392,7 @@ public static class Drawing
         path.Reverse();
         return path;
     }
-    
+
     private static IEnumerable<int> GetDirectionOrder(int currentDirection)
     {
         return new[]
@@ -487,6 +487,7 @@ public static class Drawing
             _dataDisplay.DataDisplayText.Text = $"Getting Chunks...";
         });
         List<Dictionary<Vector2, int>> Chunks = GetChunks(bitmap);
+
         Dispatcher.UIThread.Invoke(() =>
         {
             _dataDisplay.DataDisplayText.Text = $"Generating Action Path...";
@@ -497,7 +498,7 @@ public static class Drawing
         foreach (List<Vector2> Action in Actions)
         {
             DateTime TimeStarted = DateTime.Now;
-            
+
             ActionsComplete++;
             bool isDown = false;
             int ActionComplete = 0;
@@ -533,7 +534,7 @@ public static class Drawing
 
                     for (int i = 0; i < 10; i++)
                     {
-                        Input.MoveTo((short)(x-1), y);
+                        Input.MoveTo((short)(x - 1), y);
                         await NOP(ClickDelay * 500);
                         Input.MoveTo(x, y);
                     }
@@ -556,17 +557,17 @@ public static class Drawing
                     await NOP(500000);
                     Input.SendClickDown(Input.MouseTypes.MouseLeft);
                 }
-                
+
                 Input.MoveTo(x, y);
                 await NOP(Interval);
             }
             Input.SendClickUp(Input.MouseTypes.MouseLeft);
 
             var timeComp = (DateTime.Now - TimeStarted);
-            
-            Utils.Log($"Time per Action: {timeComp.TotalMilliseconds/Action.Count}");
+
+            Utils.Log($"Time per Action: {timeComp.TotalMilliseconds / Action.Count}");
             Utils.Log($"Action Count: {Action.Count}");
-            
+
             if (FreeDraw2)
             {
                 var timeLim = 1000 - timeComp.TotalMilliseconds;
@@ -587,10 +588,10 @@ public static class Drawing
         IsDrawing = false;
         Dispatcher.UIThread.Invoke(() =>
         {
-            _dataDisplay.Close();
+            _dataDisplay?.Close();
             // MessageBox popup disabled - AutoArt handles completion UI
         });
-        
+
         return true;
     }
 

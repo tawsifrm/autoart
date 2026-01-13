@@ -17,6 +17,7 @@ public class Input
 
     // Private
     private static readonly EventSimulator eventSim = new();
+    private static bool _simMouseInitialized = false;
 
     // Public
     public static TaskPoolGlobalHook taskHook = new();
@@ -24,6 +25,40 @@ public class Input
     public static bool forceUio = false;
     public static event EventHandler? MousePosUpdate;
     public static PixelPoint primaryScreenBounds;
+
+#if WINDOWS
+    /// <summary>
+    /// Initializes SimMouse by making a dummy call. This prevents TypeInitializationException on first real use.
+    /// </summary>
+    private static void EnsureSimMouseInitialized()
+    {
+        if (_simMouseInitialized) return;
+
+        try
+        {
+            // Make a no-op move to current position to trigger initialization
+            SimMouse.Act(SimMouse.Action.MoveOnly, 0, 0);
+            _simMouseInitialized = true;
+        }
+        catch (TypeInitializationException)
+        {
+            // First call fails, retry - SimMouse works on second attempt
+            try
+            {
+                SimMouse.Act(SimMouse.Action.MoveOnly, 0, 0);
+                _simMouseInitialized = true;
+            }
+            catch
+            {
+                // Still failed, will try again on actual use
+            }
+        }
+        catch
+        {
+            // Ignore other errors
+        }
+    }
+#endif
 
     //// Functions
 
@@ -39,7 +74,7 @@ public class Input
     {
         if (taskHook.IsRunning) return;
         if (taskHook.IsDisposed) return; // Avalonia Preview Fix.
-        
+
         // Get primary screen bounds if a window is provided
         if (mainWindow != null)
         {
@@ -49,7 +84,7 @@ public class Input
         taskHook.MouseMoved += (sender, e) =>
         {
             mousePos = new Vector2(e.Data.X, e.Data.Y);
-            
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 mousePos = new Vector2(mousePos.X + primaryScreenBounds.X, mousePos.Y + primaryScreenBounds.Y);
             MousePosUpdate?.Invoke(null, EventArgs.Empty);
@@ -69,8 +104,9 @@ public class Input
     public static void MoveTo(short x, short y)
     {
 #if WINDOWS
-            SimMouse.Act(SimMouse.Action.MoveOnly, x, y);
-            mousePos = new Vector2(x, y);
+        EnsureSimMouseInitialized();
+        SimMouse.Act(SimMouse.Action.MoveOnly, x, y);
+        mousePos = new Vector2(x, y);
 #else
             eventSim.SimulateMouseMovement(x, y);
 #endif
@@ -79,6 +115,7 @@ public class Input
     public static void MoveBy(short xOffset, short yOffset)
     {
 #if WINDOWS
+        EnsureSimMouseInitialized();
         SimMouse.Act(SimMouse.Action.MoveOnly, xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
         mousePos = new Vector2(xOffset + (short)mousePos.X, yOffset + (short)mousePos.Y);
 #else
@@ -91,6 +128,7 @@ public class Input
     public static void SendClick(byte mouseType)
     {
 #if WINDOWS
+        EnsureSimMouseInitialized();
         var buttonDown = mouseType == MouseTypes.MouseLeft
             ? SimMouse.Action.LeftButtonDown
             : SimMouse.Action.RightButtonDown;
@@ -109,6 +147,7 @@ public class Input
     public static void SendClickDown(byte mouseType)
     {
 #if WINDOWS
+        EnsureSimMouseInitialized();
         var buttonDown = mouseType == MouseTypes.MouseLeft
             ? SimMouse.Action.LeftButtonDown
             : SimMouse.Action.RightButtonDown;
@@ -122,6 +161,7 @@ public class Input
     public static void SendClickUp(byte mouseType)
     {
 #if WINDOWS
+        EnsureSimMouseInitialized();
         var buttonUp = mouseType == MouseTypes.MouseLeft
             ? SimMouse.Action.LeftButtonUp
             : SimMouse.Action.RightButtonUp;
@@ -136,12 +176,12 @@ public class Input
     {
         eventSim.SimulateKeyPress(keyCode);
     }
-    
+
     public static void SendKeyUp(KeyCode keyCode)
     {
         eventSim.SimulateKeyRelease(keyCode);
     }
-    
+
     public static void SendText(string? text)
     {
         if (text != null)

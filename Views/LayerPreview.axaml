@@ -16,70 +16,162 @@
         PointerMoved="OnPointerMoved">
     
     <Panel>
-        <!-- Preview Image -->
-        <Image Opacity="0.9" Name="PreviewImage" Cursor="SizeAll" 
-               PointerPressed="OnPointerPressed" 
-               PointerReleased="OnPointerReleased"/>
+        <!-- Preview Image with Better Border -->
+        <Border BorderBrush="{DynamicResource ThemeAccentPrimary}" 
+                BorderThickness="2"
+                CornerRadius="4"
+                BoxShadow="0 4 16 0 #40000000">
+            <Image Opacity="0.92" 
+                   Name="PreviewImage" 
+                   Cursor="SizeAll" 
+                   PointerPressed="OnPointerPressed" 
+                   PointerReleased="OnPointerReleased"/>
+        </Border>
         
-        <!-- Control Panel -->
-        <Grid VerticalAlignment="Top">
+        <!-- Floating Toolbar Control Panel -->
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
             <!-- Toggle Button -->
-            <Button Name="TogglePanelButton" Click="OnTogglePanelClick" 
-                    Background="#D0202020" VerticalAlignment="Top" 
-                    Width="18" Height="18" Padding="0" 
-                    BorderBrush="DarkSlateGray" BorderThickness="0,1,1,1" 
-                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
-                    HorizontalAlignment="Left" Grid.Column="1"
-                    FontSize="10" Foreground="White">
+            <Button Name="TogglePanelButton" 
+                    Click="OnTogglePanelClick" 
+                    Background="{DynamicResource ThemeCardBackground}" 
+                    BorderBrush="{DynamicResource ThemeCardBorder}"
+                    BorderThickness="1"
+                    CornerRadius="0,0,6,0"
+                    VerticalAlignment="Top" 
+                    Width="24" Height="24" 
+                    Padding="0" 
+                    HorizontalContentAlignment="Center" 
+                    VerticalContentAlignment="Center" 
+                    HorizontalAlignment="Left" 
+                    Grid.Column="1"
+                    FontSize="10" 
+                    Foreground="{DynamicResource ThemeForegroundColor}">
                 ▼
             </Button>
             
-            <!-- Edit Panel -->
+            <!-- Edit Panel - Floating Toolbar -->
             <Panel Name="EditPanel" IsVisible="False" Grid.Column="0">
-                <Border Background="#E0202020" BorderBrush="DarkSlateGray" BorderThickness="1" CornerRadius="0,0,4,0"/>
-                <StackPanel Margin="8" Spacing="6">
-                    
-                    <!-- Layer Info -->
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Border Name="ColorSwatch" Width="24" Height="24" CornerRadius="4" 
-                                Background="Gray" BorderBrush="White" BorderThickness="1"/>
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Name="LayerInfoText" Text="Layer 1/12" FontSize="12" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Name="ColorHexText" Text="#FFFFFF" FontSize="10" Foreground="#A0FFFFFF"/>
+                <Border Background="{DynamicResource ThemeCardBackground}" 
+                        BorderBrush="{DynamicResource ThemeCardBorder}" 
+                        BorderThickness="1" 
+                        CornerRadius="0,0,8,0"
+                        BoxShadow="0 4 16 0 #30000000"
+                        Padding="12">
+                    <StackPanel Spacing="10">
+                        
+                        <!-- Layer Info -->
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Border Name="ColorSwatch" 
+                                    Classes="ColorSwatch Selected"
+                                    Width="32" Height="32" 
+                                    Background="Gray"/>
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Name="LayerInfoText" 
+                                           Text="Layer 1/12" 
+                                           FontSize="12" FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource ThemeForegroundColor}"/>
+                                <TextBlock Name="ColorHexText" 
+                                           Text="#FFFFFF" 
+                                           FontSize="10" 
+                                           FontFamily="Consolas"
+                                           Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                            </StackPanel>
                         </StackPanel>
+                        
+                        <Separator Height="1"/>
+                        
+                        <!-- Position Controls -->
+                        <StackPanel Spacing="6">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="📍" 
+                                           VerticalAlignment="Center" 
+                                           FontSize="12"/>
+                                <TextBlock Text="Position" 
+                                           VerticalAlignment="Center" 
+                                           FontSize="11" 
+                                           FontWeight="Medium"
+                                           Foreground="{DynamicResource ThemeForegroundColor}"/>
+                            </StackPanel>
+                            
+                            <Grid ColumnDefinitions="20,70,Auto" RowDefinitions="Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" 
+                                           Text="X:" 
+                                           VerticalAlignment="Center" 
+                                           FontSize="11" 
+                                           Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                                <TextBox Name="XPos" 
+                                         Grid.Row="0" Grid.Column="1"
+                                         Width="70" 
+                                         FontSize="11" 
+                                         Text="0"
+                                         TextChanged="OnXPosChanged"
+                                         Margin="0,0,0,6"/>
+                                <CheckBox Name="XLock" 
+                                          Grid.Row="0" Grid.Column="2"
+                                          VerticalAlignment="Center" 
+                                          Click="OnXLockChanged"
+                                          Margin="6,0,0,6">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="🔒" FontSize="10"/>
+                                        <TextBlock Text="Lock" 
+                                                   FontSize="10" 
+                                                   Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                                    </StackPanel>
+                                </CheckBox>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" 
+                                           Text="Y:" 
+                                           VerticalAlignment="Center" 
+                                           FontSize="11" 
+                                           Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                                <TextBox Name="YPos" 
+                                         Grid.Row="1" Grid.Column="1"
+                                         Width="70" 
+                                         FontSize="11" 
+                                         Text="0" 
+                                         TextChanged="OnYPosChanged"/>
+                                <CheckBox Name="YLock" 
+                                          Grid.Row="1" Grid.Column="2"
+                                          VerticalAlignment="Center" 
+                                          Click="OnYLockChanged"
+                                          Margin="6,0,0,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="🔒" FontSize="10"/>
+                                        <TextBlock Text="Lock" 
+                                                   FontSize="10" 
+                                                   Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                                    </StackPanel>
+                                </CheckBox>
+                            </Grid>
+                        </StackPanel>
+                        
+                        <Separator Height="1"/>
+                        
+                        <!-- Instructions -->
+                        <Border Background="{DynamicResource ThemePastelBlue}"
+                                CornerRadius="6"
+                                Padding="10">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="⌨️ Keyboard Shortcuts" 
+                                           FontSize="10" 
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ThemeForegroundColor}"/>
+                                <TextBlock Text="Press SHIFT to draw this layer" 
+                                           FontSize="10" 
+                                           Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                                <TextBlock Text="Press ESC to cancel" 
+                                           FontSize="10" 
+                                           Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                            </StackPanel>
+                        </Border>
+                        
                     </StackPanel>
-                    
-                    <Separator Height="1" Background="#40FFFFFF"/>
-                    
-                    <!-- Position Controls -->
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBlock Text="X:" VerticalAlignment="Center" FontSize="11" Foreground="White" Width="16"/>
-                        <TextBox Name="XPos" Width="60" FontSize="11" Text="0" TextChanged="OnXPosChanged"/>
-                        <CheckBox Name="XLock" VerticalAlignment="Center" Click="OnXLockChanged">
-                            <TextBlock Text="Lock" FontSize="10" Foreground="White"/>
-                        </CheckBox>
-                    </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBlock Text="Y:" VerticalAlignment="Center" FontSize="11" Foreground="White" Width="16"/>
-                        <TextBox Name="YPos" Width="60" FontSize="11" Text="0" TextChanged="OnYPosChanged"/>
-                        <CheckBox Name="YLock" VerticalAlignment="Center" Click="OnYLockChanged">
-                            <TextBlock Text="Lock" FontSize="10" Foreground="White"/>
-                        </CheckBox>
-                    </StackPanel>
-                    
-                    <Separator Height="1" Background="#40FFFFFF"/>
-                    
-                    <!-- Instructions -->
-                    <TextBlock Text="Press SHIFT to draw this layer" FontSize="10" Foreground="#C0FFFFFF" TextWrapping="Wrap"/>
-                    <TextBlock Text="Press ESC to cancel" FontSize="10" Foreground="#80FFFFFF"/>
-                    
-                </StackPanel>
+                </Border>
             </Panel>
         </Grid>
     </Panel>

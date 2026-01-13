@@ -16,72 +16,72 @@ public class DrawingService
 {
     private bool _isInitialized = false;
     private TaskPoolGlobalHook? _hook;
-    
+
     /// <summary>
     /// The global keyboard/mouse hook for this service.
     /// </summary>
     public TaskPoolGlobalHook? Hook => _hook;
-    
+
     /// <summary>
     /// Current mouse position.
     /// </summary>
     public Vector2 MousePosition { get; private set; }
-    
+
     /// <summary>
     /// Event fired when drawing of a layer is complete.
     /// </summary>
     public event EventHandler? LayerDrawingComplete;
-    
+
     /// <summary>
     /// Event fired when all layers are drawn.
     /// </summary>
     public event EventHandler? AllLayersComplete;
-    
+
     /// <summary>
     /// Event fired when a key is pressed.
     /// </summary>
     public event EventHandler<KeyboardHookEventArgs>? KeyPressed;
-    
+
     /// <summary>
     /// Initializes the input system. Should be called once at app startup.
     /// </summary>
     public void Initialize()
     {
         if (_isInitialized) return;
-        
+
         // Initialize our own hook
         _hook = new TaskPoolGlobalHook();
-        
+
         _hook.MouseMoved += (sender, e) =>
         {
             MousePosition = new Vector2(e.Data.X, e.Data.Y);
         };
-        
+
         _hook.KeyPressed += (sender, e) =>
         {
             KeyPressed?.Invoke(this, e);
         };
-        
+
         _hook.RunAsync();
-        
+
         // Initialize config
         Config.Init();
         _isInitialized = true;
     }
-    
+
     /// <summary>
     /// Stops the input system. Should be called when the app is closing.
     /// </summary>
     public void Shutdown()
     {
         if (!_isInitialized) return;
-        
+
         Drawing.Halt();
         _hook?.Dispose();
         _hook = null;
         _isInitialized = false;
     }
-    
+
     /// <summary>
     /// Sets up the drawing parameters.
     /// </summary>
@@ -94,7 +94,7 @@ public class DrawingService
         Drawing.ClickDelay = clickDelay;
         Drawing.ChosenAlgorithm = algorithm;
     }
-    
+
     /// <summary>
     /// Processes a layer bitmap for drawing.
     /// For color layers, we convert based on alpha only - any opaque pixel should be drawn.
@@ -109,7 +109,7 @@ public class DrawingService
         // We don't use luminosity thresholding because layer colors can be light (yellow, cyan, etc.)
         return ConvertLayerToDrawable(layer.Bitmap, alphaThreshold: 128);
     }
-    
+
     /// <summary>
     /// Converts a color layer bitmap to a black/white drawable format.
     /// Opaque pixels (alpha >= threshold) become black (drawable).
@@ -119,12 +119,12 @@ public class DrawingService
     {
         int width = sourceBitmap.Width;
         int height = sourceBitmap.Height;
-        
+
         SKBitmap outputBitmap = new SKBitmap(width, height);
-        
+
         byte* srcPtr = (byte*)sourceBitmap.GetPixels().ToPointer();
         byte* dstPtr = (byte*)outputBitmap.GetPixels().ToPointer();
-        
+
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
@@ -134,11 +134,11 @@ public class DrawingService
                 byte g = *srcPtr++;
                 byte r = *srcPtr++;
                 byte a = *srcPtr++;
-                
+
                 // If pixel is opaque (alpha >= threshold), make it black (drawable)
                 // Otherwise, make it white (non-drawable)
                 byte value = a >= alphaThreshold ? (byte)0 : (byte)255;
-                
+
                 // Write BGRA (black or white with full opacity)
                 *dstPtr++ = value; // B
                 *dstPtr++ = value; // G
@@ -146,10 +146,10 @@ public class DrawingService
                 *dstPtr++ = 255;   // A (always fully opaque in output)
             }
         }
-        
+
         return outputBitmap;
     }
-    
+
     /// <summary>
     /// Draws a single layer at the specified position.
     /// </summary>
@@ -158,15 +158,15 @@ public class DrawingService
     public async Task DrawLayerAsync(ColorLayer layer, Vector2 position)
     {
         if (Drawing.IsDrawing) return;
-        
+
         var processedBitmap = ProcessLayerForDrawing(layer);
-        
+
         await Drawing.Draw(processedBitmap, position);
-        
+
         layer.IsDrawn = true;
         LayerDrawingComplete?.Invoke(this, EventArgs.Empty);
     }
-    
+
     /// <summary>
     /// Halts any ongoing drawing operation.
     /// </summary>
@@ -174,12 +174,12 @@ public class DrawingService
     {
         Drawing.Halt();
     }
-    
+
     /// <summary>
     /// Gets whether drawing is currently in progress.
     /// </summary>
     public bool IsDrawing => Drawing.IsDrawing;
-    
+
     /// <summary>
     /// Gets or sets the last drawing position.
     /// </summary>
@@ -188,12 +188,12 @@ public class DrawingService
         get => Drawing.LastPos;
         set => Drawing.LastPos = value;
     }
-    
+
     /// <summary>
     /// Gets the start drawing keybind.
     /// </summary>
     public SharpHook.Native.KeyCode StartDrawingKey => Config.Keybind_StartDrawing;
-    
+
     /// <summary>
     /// Gets the stop drawing keybind.
     /// </summary>
