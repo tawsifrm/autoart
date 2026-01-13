@@ -1,36 +1,63 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
-    <!--#DarkTheme-->
+    <!--#DarkTheme - Modern Creative Aesthetic (Optional)-->
     
     <Style Selector=":is(Window)">
-        <Setter Property="Background" Value="#1E1E1E"/>
+        <Setter Property="Background" Value="#0F172A"/>
     </Style>
     
     <Styles.Resources>
         <ResourceDictionary>
-            <!--Core Colors-->
-            <SolidColorBrush x:Key="ThemeBackgroundColor" Color="#1E1E1E"/>
-            <SolidColorBrush x:Key="ThemeToolbarColor" Color="#2D2D2D"/>
-            <SolidColorBrush x:Key="ThemeForegroundColor" Color="#FFFFFF"/>
-            <SolidColorBrush x:Key="ThemeSecondaryForeground" Color="#A0A0A0"/>
+            <!--Core Colors - Rich Dark Canvas-->
+            <SolidColorBrush x:Key="ThemeBackgroundColor" Color="#0F172A"/>
+            <SolidColorBrush x:Key="ThemeToolbarColor" Color="#1E293B"/>
+            <SolidColorBrush x:Key="ThemeForegroundColor" Color="#F1F5F9"/>
+            <SolidColorBrush x:Key="ThemeSecondaryForeground" Color="#94A3B8"/>
             
-            <!--Accent-->
-            <SolidColorBrush x:Key="ThemeAccentColor" Color="#4CAF50"/>
-            <SolidColorBrush x:Key="ThemeAccentHover" Color="#66BB6A"/>
+            <!--Multi-Accent Palette-->
+            <SolidColorBrush x:Key="ThemeAccentPrimary" Color="#818CF8"/>
+            <SolidColorBrush x:Key="ThemeAccentPrimaryHover" Color="#6366F1"/>
+            <SolidColorBrush x:Key="ThemeAccentSuccess" Color="#34D399"/>
+            <SolidColorBrush x:Key="ThemeAccentSuccessHover" Color="#10B981"/>
+            <SolidColorBrush x:Key="ThemeAccentWarning" Color="#FBBF24"/>
+            <SolidColorBrush x:Key="ThemeAccentDanger" Color="#F87171"/>
+            <SolidColorBrush x:Key="ThemeAccentDangerHover" Color="#EF4444"/>
+            
+            <!--Subtle Dark Accents for Sections-->
+            <SolidColorBrush x:Key="ThemePastelBlue" Color="#1E3A8A"/>
+            <SolidColorBrush x:Key="ThemePastelGreen" Color="#064E3B"/>
+            <SolidColorBrush x:Key="ThemePastelPurple" Color="#4C1D95"/>
+            <SolidColorBrush x:Key="ThemePastelOrange" Color="#7C2D12"/>
+            
+            <!--Card & Surface Colors-->
+            <SolidColorBrush x:Key="ThemeCardBackground" Color="#1E293B"/>
+            <SolidColorBrush x:Key="ThemeCardBorder" Color="#334155"/>
+            <SolidColorBrush x:Key="ThemeCardShadow" Color="#20000000"/>
             
             <!--Button Colors-->
-            <SolidColorBrush x:Key="ThemeButtonBackground" Color="#3C3C3C"/>
-            <SolidColorBrush x:Key="ThemeButtonHoverBackground" Color="#4A4A4A"/>
-            <SolidColorBrush x:Key="ThemeButtonPressedBackground" Color="#2A2A2A"/>
+            <SolidColorBrush x:Key="ThemeButtonBackground" Color="#334155"/>
+            <SolidColorBrush x:Key="ThemeButtonHoverBackground" Color="#475569"/>
+            <SolidColorBrush x:Key="ThemeButtonPressedBackground" Color="#1E293B"/>
+            
+            <!--Primary Action Button-->
+            <SolidColorBrush x:Key="ThemePrimaryButtonBackground" Color="#34D399"/>
+            <SolidColorBrush x:Key="ThemePrimaryButtonHover" Color="#10B981"/>
+            <SolidColorBrush x:Key="ThemePrimaryButtonForeground" Color="#0F172A"/>
             
             <!--TextBox Colors-->
-            <SolidColorBrush x:Key="ThemeTextBoxBackground" Color="#2D2D2D"/>
-            <SolidColorBrush x:Key="ThemeBorderColor" Color="#404040"/>
+            <SolidColorBrush x:Key="ThemeTextBoxBackground" Color="#1E293B"/>
+            <SolidColorBrush x:Key="ThemeTextBoxBorder" Color="#475569"/>
+            <SolidColorBrush x:Key="ThemeTextBoxBorderFocused" Color="#818CF8"/>
             
             <!--Other-->
-            <SolidColorBrush x:Key="ThemeImagePreviewBackground" Color="#252525"/>
-            <SolidColorBrush x:Key="ThemeSeparatorColor" Color="#404040"/>
+            <SolidColorBrush x:Key="ThemeImagePreviewBackground" Color="#1E293B"/>
+            <SolidColorBrush x:Key="ThemeSeparatorColor" Color="#334155"/>
+            
+            <!--Legacy Compatibility-->
+            <SolidColorBrush x:Key="ThemeAccentColor" Color="#34D399"/>
+            <SolidColorBrush x:Key="ThemeAccentHover" Color="#10B981"/>
+            <SolidColorBrush x:Key="ThemeBorderColor" Color="#475569"/>
         </ResourceDictionary>
     </Styles.Resources>
     
