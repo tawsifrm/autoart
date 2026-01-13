@@ -9,8 +9,9 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <AssemblyName>AutoArt</AssemblyName>
         <RootNamespace>AutoArt</RootNamespace>
-        <FileVersion>1.0.0.0</FileVersion>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <Version>1.1.0</Version>
+        <FileVersion>1.1.0.0</FileVersion>
+        <AssemblyVersion>1.1.0</AssemblyVersion>
         <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
 
