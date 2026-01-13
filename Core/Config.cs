@@ -31,8 +31,46 @@ public class Config
     public static KeyCode Keybind_SkipRescan = KeyCode.VcBackspace;
     public static KeyCode Keybind_LockPreview = KeyCode.VcLeftControl;
     public static KeyCode Keybind_ClearLock = KeyCode.VcBackQuote;
-    
-    public static Vector2 Preview_LastLockPos = new(0,0);
+
+    public static Vector2 Preview_LastLockPos = new(0, 0);
+
+    // =====================================================================================
+    // ACTION SET OPTIMIZER SETTINGS
+    // These control how small action sets are merged to improve drawing performance.
+    // =====================================================================================
+
+    /// <summary>
+    /// Enable/disable the action set optimizer. When enabled, small nearby action sets
+    /// are merged to reduce drawing overhead.
+    /// </summary>
+    public static bool Optimizer_Enabled = true;
+
+    /// <summary>
+    /// Action sets with this many points or fewer are considered "small" and eligible for merging.
+    /// </summary>
+    public static int Optimizer_SmallSetThreshold = 10;
+
+    /// <summary>
+    /// Maximum distance (in pixels) between action set centroids for them to be clustered.
+    /// </summary>
+    public static float Optimizer_ClusterDistance = 25f;
+
+    /// <summary>
+    /// Minimum number of small action sets in a cluster before merging is applied.
+    /// </summary>
+    public static int Optimizer_MinClusterSize = 3;
+
+    /// <summary>
+    /// Maximum distance between consecutive points to be considered "connected".
+    /// Points further apart will be in separate action sets (pen-up between them).
+    /// Default 1.5 allows diagonal adjacency (8-connected pixels).
+    /// </summary>
+    public static float Optimizer_MaxConnectedDistance = 1.5f;
+
+    /// <summary>
+    /// When true, sorts action sets spatially (serpentine pattern) to minimize mouse travel.
+    /// </summary>
+    public static bool Optimizer_SpatialOrdering = true;
 
     public static string ConfigPath = Path.Combine(FolderPath, "config.json");
     public static string ThemesPath = Path.Combine(FolderPath, "Themes");
@@ -58,7 +96,7 @@ public class Config
         {
             ThemesPath = GetEntry("SavedThemesPath")!;
         }
-        
+
         // Check Configuration Path for Cache
         if (GetEntry("SavedCachePath") is null || !Directory.Exists(GetEntry("SavedPath")))
         {
@@ -69,7 +107,7 @@ public class Config
         {
             CachePath = GetEntry("SavedCachePath")!;
         }
-        
+
         // Get Keybinds
         if (GetEntry("Keybind_StartDrawing") is not null)
         {
@@ -95,11 +133,55 @@ public class Config
         {
             Keybind_ClearLock = (KeyCode)Enum.Parse(typeof(KeyCode), GetEntry("Keybind_ClearLock")!);
         }
-        
+
         if (GetEntry("Preview_LastLockedX") is not null && GetEntry("Preview_LastLockedY") is not null)
         {
             Preview_LastLockPos = new Vector2(int.Parse(GetEntry("Preview_LastLockedX")!), int.Parse(GetEntry("Preview_LastLockedY")!));
         }
+
+        // Load optimizer settings from config
+        LoadOptimizerSettings();
+    }
+
+    /// <summary>
+    /// Loads action set optimizer settings from config and applies them.
+    /// </summary>
+    private static void LoadOptimizerSettings()
+    {
+        if (GetEntry("Optimizer_Enabled") is not null)
+        {
+            Optimizer_Enabled = bool.Parse(GetEntry("Optimizer_Enabled")!);
+        }
+        if (GetEntry("Optimizer_SmallSetThreshold") is not null)
+        {
+            Optimizer_SmallSetThreshold = int.Parse(GetEntry("Optimizer_SmallSetThreshold")!);
+        }
+        if (GetEntry("Optimizer_ClusterDistance") is not null)
+        {
+            Optimizer_ClusterDistance = float.Parse(GetEntry("Optimizer_ClusterDistance")!);
+        }
+        if (GetEntry("Optimizer_MinClusterSize") is not null)
+        {
+            Optimizer_MinClusterSize = int.Parse(GetEntry("Optimizer_MinClusterSize")!);
+        }
+        if (GetEntry("Optimizer_MaxConnectedDistance") is not null)
+        {
+            Optimizer_MaxConnectedDistance = float.Parse(GetEntry("Optimizer_MaxConnectedDistance")!);
+        }
+        if (GetEntry("Optimizer_SpatialOrdering") is not null)
+        {
+            Optimizer_SpatialOrdering = bool.Parse(GetEntry("Optimizer_SpatialOrdering")!);
+        }
+
+        // Apply settings to the optimizer
+        ActionSetOptimizer.EnableOptimization = Optimizer_Enabled;
+        ActionSetOptimizer.Configure(
+            Optimizer_SmallSetThreshold,
+            Optimizer_ClusterDistance,
+            Optimizer_MinClusterSize,
+            Optimizer_MaxConnectedDistance,
+            Optimizer_SpatialOrdering
+        );
     }
 
     public static string? GetEntry(string entry)
