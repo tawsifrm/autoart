@@ -219,6 +219,13 @@ public partial class MainWindow : Window
             _displayedBitmap = ConvertToAvaloniaBitmap(_rawBitmap);
             ImagePreview.Image = _displayedBitmap;
             
+            // Hide empty state overlay
+            var emptyStateOverlay = this.FindControl<Border>("EmptyStateOverlay");
+            if (emptyStateOverlay != null)
+            {
+                emptyStateOverlay.IsVisible = false;
+            }
+            
             // Update state
             _appState.CurrentState = AppStateType.Configuring;
             SplitButton.IsEnabled = true;
@@ -227,7 +234,7 @@ public partial class MainWindow : Window
             
             // Clear previous layers
             ClearColorLayerPreviews();
-            LayerCountText.Text = "No layers";
+            LayerCountText.Text = "(0)";
             StartDrawingButton.IsEnabled = false;
         }
         catch (Exception ex)
@@ -305,15 +312,18 @@ public partial class MainWindow : Window
         {
             var swatch = new Border
             {
-                Width = 24,
-                Height = 24,
-                CornerRadius = new CornerRadius(4),
+                Width = 48,
+                Height = 48,
+                CornerRadius = new CornerRadius(8),
                 Background = new SolidColorBrush(layer.Color),
-                BorderBrush = Brushes.White,
-                BorderThickness = new Thickness(1),
-                Margin = new Thickness(2),
+                BorderBrush = new SolidColorBrush(Color.Parse("#E5E7EB")),
+                BorderThickness = new Thickness(2),
+                Margin = new Thickness(4),
                 Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand)
             };
+            
+            // Apply ColorSwatch style class for hover effects
+            swatch.Classes.Add("ColorSwatch");
             
             // Show layer preview on click
             swatch.PointerPressed += (_, _) => ShowLayerPreview(layer);
