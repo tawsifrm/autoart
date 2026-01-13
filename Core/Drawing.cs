@@ -494,6 +494,31 @@ public static class Drawing
         });
         List<List<Vector2>> Actions = GenerateActions(Chunks, dataArray);
 
+        // =====================================================================================
+        // ACTION SET OPTIMIZATION
+        // =====================================================================================
+        // Optimize action sets to reduce overhead from many small, fragmented paths.
+        // This is critical for layers with fine details, stippling, or scattered pixels.
+        // The optimizer merges clusters of small, nearby action sets into larger ones,
+        // dramatically reducing the number of mouse-up/move/mouse-down cycles.
+        // See ActionSetOptimizer.cs for detailed documentation on the algorithm and tradeoffs.
+        // =====================================================================================
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            _dataDisplay.DataDisplayText.Text = $"Optimizing Action Sets...";
+        });
+
+        // Log pre-optimization statistics for debugging
+        var preOptStats = ActionSetOptimizer.AnalyzeActionSets(Actions);
+        Utils.Log($"[Pre-Optimization] {preOptStats}");
+
+        // Apply optimization - merges small nearby action sets to reduce overhead
+        Actions = ActionSetOptimizer.OptimizeActionSets(Actions);
+
+        // Log post-optimization statistics
+        var postOptStats = ActionSetOptimizer.AnalyzeActionSets(Actions);
+        Utils.Log($"[Post-Optimization] {postOptStats}");
+
         int ActionsComplete = 0;
         foreach (List<Vector2> Action in Actions)
         {
