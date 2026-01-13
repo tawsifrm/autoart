@@ -39,7 +39,7 @@
                 <Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20" 
                        VerticalContentAlignment="Center" Content="AutoArt"/>
                 <Label Classes="Title ClickThru" Margin="4 0 0 0" Padding="0" Height="20" 
-                       VerticalContentAlignment="Center" Content="v1.0.0" FontSize="10" Opacity="0.7"/>
+                       VerticalContentAlignment="Center" Content="v1.1.0" FontSize="10" Opacity="0.7"/>
             </StackPanel>
 
             <!--Buttons-->
@@ -60,149 +60,255 @@
         <!--Body-->
         <Image Classes="MainBody" Grid.Row="1" />
         
-        <Grid Classes="Body" Grid.Row="1" Name="Body" Margin="8" ColumnDefinitions="1*,8,280">
+        <Grid Classes="Body" Grid.Row="1" Name="Body" Margin="12" ColumnDefinitions="1*,16,320">
             
-            <!-- Left Panel: Image Preview -->
-            <Grid Grid.Column="0" RowDefinitions="*,8,Auto">
-                <Canvas Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" VerticalAlignment="Stretch">
-                    <Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" IsHitTestVisible="False"
-                            Height="{Binding $parent.Bounds.Height}" Background="#20000000" CornerRadius="4">
-                    </Border>
-                    <avaloniaControls:AdvancedImageBox Name="ImagePreview" ShowGrid="False" 
-                                                       ZoomWithMouseWheelBehaviour="ZoomLevelsAltNative" AutoZoomToFit="True"
-                                                       Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}">
-                    </avaloniaControls:AdvancedImageBox>
-                </Canvas>
+            <!-- Left Panel: Image Preview with Canvas Feel -->
+            <Grid Grid.Column="0" RowDefinitions="*,12,Auto">
+                <!-- Image Preview with Checkerboard Background -->
+                <Border Grid.Row="0" Classes="ImagePreview" 
+                        Background="#F9FAFB"
+                        BorderBrush="{DynamicResource ThemeCardBorder}"
+                        BorderThickness="1"
+                        BoxShadow="0 1 3 0 #10000000">
+                    <Panel>
+                        <!-- Checkerboard pattern background -->
+                        <Canvas Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}">
+                            <Rectangle Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Stretch="None" 
+                                                 DestinationRect="0,0,20,20">
+                                        <VisualBrush.Visual>
+                                            <Canvas Width="20" Height="20">
+                                                <Rectangle Fill="#F3F4F6" Width="10" Height="10" Canvas.Left="0" Canvas.Top="0"/>
+                                                <Rectangle Fill="#FFFFFF" Width="10" Height="10" Canvas.Left="10" Canvas.Top="0"/>
+                                                <Rectangle Fill="#FFFFFF" Width="10" Height="10" Canvas.Left="0" Canvas.Top="10"/>
+                                                <Rectangle Fill="#F3F4F6" Width="10" Height="10" Canvas.Left="10" Canvas.Top="10"/>
+                                            </Canvas>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+                        
+                        <!-- Actual Image -->
+                        <avaloniaControls:AdvancedImageBox Name="ImagePreview" ShowGrid="False" 
+                                                           ZoomWithMouseWheelBehaviour="ZoomLevelsAltNative" 
+                                                           AutoZoomToFit="True"
+                                                           Width="{Binding $parent.Bounds.Width}" 
+                                                           Height="{Binding $parent.Bounds.Height}">
+                        </avaloniaControls:AdvancedImageBox>
+                        
+                        <!-- Empty State Overlay -->
+                        <Border Name="EmptyStateOverlay" IsVisible="True" 
+                                Background="#FAFCFE"
+                                VerticalAlignment="Center" HorizontalAlignment="Center"
+                                MaxWidth="300">
+                            <StackPanel Spacing="16" Margin="32">
+                                <!-- Icon/Illustration -->
+                                <Viewbox Width="64" Height="64" HorizontalAlignment="Center">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Fill="{DynamicResource ThemeSecondaryForeground}" 
+                                              Data="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                                    </Canvas>
+                                </Viewbox>
+                                
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="Import an image to get started" 
+                                               FontSize="16" FontWeight="SemiBold"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource ThemeForegroundColor}"/>
+                                    <TextBlock Text="Drag and drop or click Import Image below" 
+                                               FontSize="13"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource ThemeSecondaryForeground}"
+                                               TextWrapping="Wrap"
+                                               TextAlignment="Center"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Panel>
+                </Border>
                 
                 <!-- Status Bar -->
-                <Border Grid.Row="2" Background="#30000000" CornerRadius="4" Padding="8 4">
-                    <TextBlock Name="StatusText" Text="Load an image to begin" VerticalAlignment="Center" FontSize="12"/>
+                <Border Grid.Row="2" 
+                        Background="{DynamicResource ThemeCardBackground}" 
+                        BorderBrush="{DynamicResource ThemeCardBorder}"
+                        BorderThickness="1"
+                        CornerRadius="8" 
+                        Padding="12 8"
+                        BoxShadow="0 1 3 0 #10000000">
+                    <TextBlock Name="StatusText" Text="Ready to create art" 
+                               VerticalAlignment="Center" FontSize="12"
+                               Foreground="{DynamicResource ThemeSecondaryForeground}"/>
                 </Border>
             </Grid>
             
-            <!-- Right Panel: Controls -->
-            <Border Grid.Column="2" Background="#20000000" CornerRadius="4" Padding="12">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="12">
-                        
-                        <!-- Import Section -->
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="IMAGE" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
-                            <Button Name="ImportButton" Content="Import Image" HorizontalAlignment="Stretch"/>
+            <!-- Right Panel: Card-Based Controls -->
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="12">
+                    
+                    <!-- Image Card -->
+                    <Border Classes="Card">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="CardTitle" Text="🖼️ Image"/>
+                            <Button Name="ImportButton" Classes="Primary" 
+                                    Content="Import Image" HorizontalAlignment="Stretch"/>
                         </StackPanel>
-                        
-                        <Separator Height="1" Background="#30FFFFFF"/>
-                        
-                        <!-- Color Splitting Options -->
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="COLOR SPLITTING" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
+                    </Border>
+                    
+                    <!-- Color Splitting Card -->
+                    <Border Classes="Card">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="CardTitle" Text="🎨 Color Splitting"/>
                             
-                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Colors:" VerticalAlignment="Center" Margin="0,0,8,6"/>
-                                <TextBox Name="ColorsInput" Grid.Row="0" Grid.Column="1" Text="12" Width="60" HorizontalAlignment="Left" Margin="0,0,0,6"/>
+                            <StackPanel Spacing="10">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Number of Colors" FontSize="12" FontWeight="Medium"/>
+                                    <TextBox Name="ColorsInput" Text="12" Width="80" HorizontalAlignment="Left"/>
+                                </StackPanel>
                                 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Mode:" VerticalAlignment="Center" Margin="0,0,8,6"/>
-                                <ComboBox Name="ModeSelector" Grid.Row="1" Grid.Column="1" SelectedIndex="0" HorizontalAlignment="Stretch" Margin="0,0,0,6">
-                                    <ComboBoxItem Content="KMeans OKLab"/>
-                                    <ComboBoxItem Content="KMeans CIELab"/>
-                                    <ComboBoxItem Content="KMeans RGB"/>
-                                    <ComboBoxItem Content="MedianCut OKLab"/>
-                                    <ComboBoxItem Content="MedianCut CIELab"/>
-                                    <ComboBoxItem Content="MedianCut RGB"/>
-                                </ComboBox>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Algorithm Mode" FontSize="12" FontWeight="Medium"/>
+                                    <ComboBox Name="ModeSelector" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                        <ComboBoxItem Content="KMeans OKLab"/>
+                                        <ComboBoxItem Content="KMeans CIELab"/>
+                                        <ComboBoxItem Content="KMeans RGB"/>
+                                        <ComboBoxItem Content="MedianCut OKLab"/>
+                                        <ComboBoxItem Content="MedianCut CIELab"/>
+                                        <ComboBoxItem Content="MedianCut RGB"/>
+                                    </ComboBox>
+                                </StackPanel>
                                 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Initializer:" VerticalAlignment="Center" Margin="0,0,8,6"/>
-                                <ComboBox Name="InitializerSelector" Grid.Row="2" Grid.Column="1" SelectedIndex="0" HorizontalAlignment="Stretch" Margin="0,0,0,6">
-                                    <ComboBoxItem Content="KMeans++"/>
-                                    <ComboBoxItem Content="MedianCut"/>
-                                </ComboBox>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Initializer" FontSize="12" FontWeight="Medium"/>
+                                    <ComboBox Name="InitializerSelector" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                        <ComboBoxItem Content="KMeans++"/>
+                                        <ComboBoxItem Content="MedianCut"/>
+                                    </ComboBox>
+                                </StackPanel>
                                 
-                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Iterations:" VerticalAlignment="Center" Margin="0,0,8,6"/>
-                                <TextBox Name="IterationsInput" Grid.Row="3" Grid.Column="1" Text="12" Width="60" HorizontalAlignment="Left" Margin="0,0,0,6"/>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Iterations" FontSize="12" FontWeight="Medium"/>
+                                    <TextBox Name="IterationsInput" Text="12" Width="80" HorizontalAlignment="Left"/>
+                                </StackPanel>
                                 
-                                <CheckBox Name="RemoveStrayCheckbox" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" 
-                                          Content="Remove stray pixels" IsChecked="False"/>
-                            </Grid>
+                                <CheckBox Name="RemoveStrayCheckbox" 
+                                          Content="Remove stray pixels" IsChecked="False"
+                                          Margin="0,4,0,0"/>
+                            </StackPanel>
                             
-                            <Button Name="SplitButton" Content="Split Colors" HorizontalAlignment="Stretch" IsEnabled="False"/>
+                            <Button Name="SplitButton" Content="Split Colors" 
+                                    HorizontalAlignment="Stretch" IsEnabled="False"/>
                         </StackPanel>
-                        
-                        <Separator Height="1" Background="#30FFFFFF"/>
-                        
-                        <!-- Color Layers Preview -->
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="COLOR LAYERS" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
-                            <TextBlock Name="LayerCountText" Text="No layers" FontSize="11" Opacity="0.5"/>
-                            <Border Background="#20000000" CornerRadius="4" MinHeight="60" Padding="4">
-                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    </Border>
+                    
+                    <!-- Color Layers Card -->
+                    <Border Classes="Card">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Classes="CardTitle" Text="🎭 Color Layers" Margin="0"/>
+                                <TextBlock Name="LayerCountText" Text="(0)" 
+                                           FontSize="13" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource ThemeSecondaryForeground}"/>
+                            </StackPanel>
+                            
+                            <!-- Grid Layout for Color Swatches -->
+                            <Border Background="{DynamicResource ThemeImagePreviewBackground}" 
+                                    CornerRadius="8" 
+                                    MinHeight="100" 
+                                    Padding="12"
+                                    BorderBrush="{DynamicResource ThemeCardBorder}"
+                                    BorderThickness="1">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="200">
                                     <WrapPanel Name="ColorLayersPanel" Orientation="Horizontal">
                                         <!-- Color swatches will be added dynamically -->
+                                        <!-- Each swatch will be larger: 48x48 with 8px spacing -->
                                     </WrapPanel>
                                 </ScrollViewer>
                             </Border>
                         </StackPanel>
-                        
-                        <Separator Height="1" Background="#30FFFFFF"/>
-                        
-                        <!-- Drawing Section -->
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="DRAWING" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
+                    </Border>
+                    
+                    <!-- Drawing Card -->
+                    <Border Classes="Card">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="CardTitle" Text="✏️ Drawing"/>
                             
-                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Algorithm:" VerticalAlignment="Center" Margin="0,0,8,6"/>
-                                <ComboBox Name="AlgorithmSelector" Grid.Row="0" Grid.Column="1" SelectedIndex="0" HorizontalAlignment="Stretch" Margin="0,0,0,6">
-                                    <ComboBoxItem Content="DFS (Depth-First)"/>
-                                    <ComboBoxItem Content="Edge-Following"/>
-                                </ComboBox>
+                            <StackPanel Spacing="10">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Algorithm" FontSize="12" FontWeight="Medium"/>
+                                    <ComboBox Name="AlgorithmSelector" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                        <ComboBoxItem Content="DFS (Depth-First)"/>
+                                        <ComboBoxItem Content="Edge-Following"/>
+                                    </ComboBox>
+                                </StackPanel>
                                 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Scale:" VerticalAlignment="Center" Margin="0,0,8,6"/>
-                                <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,50" Margin="0,0,0,6">
-                                    <Slider Name="ScaleSlider" Grid.Column="0" Minimum="1" Maximum="200" Value="100" 
-                                            TickFrequency="1" VerticalAlignment="Center"/>
-                                    <TextBox Name="ScaleInput" Grid.Column="1" Text="100%" Width="50" 
-                                             HorizontalContentAlignment="Center" Margin="4,0,0,0"/>
-                                </Grid>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Scale" FontSize="12" FontWeight="Medium"/>
+                                    <Grid ColumnDefinitions="*,60">
+                                        <Slider Name="ScaleSlider" Grid.Column="0" 
+                                                Minimum="1" Maximum="200" Value="100" 
+                                                TickFrequency="1" VerticalAlignment="Center"
+                                                Margin="0,0,8,0"/>
+                                        <TextBox Name="ScaleInput" Grid.Column="1" Text="100%" 
+                                                 HorizontalContentAlignment="Center"/>
+                                    </Grid>
+                                </StackPanel>
                                 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Speed:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <Slider Name="SpeedSlider" Grid.Row="2" Grid.Column="1" Minimum="1" Maximum="100" Value="50"/>
-                            </Grid>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Speed" FontSize="12" FontWeight="Medium"/>
+                                    <Slider Name="SpeedSlider" Minimum="1" Maximum="100" Value="50"/>
+                                </StackPanel>
+                            </StackPanel>
                             
-                            <Button Name="StartDrawingButton" Content="Start Drawing Session" 
-                                    HorizontalAlignment="Stretch" IsEnabled="False" 
-                                    Background="#2E7D32" Foreground="White"/>
+                            <Button Name="StartDrawingButton" Classes="Primary"
+                                    Content="Start Drawing Session" 
+                                    HorizontalAlignment="Stretch" IsEnabled="False"/>
                         </StackPanel>
-                        
-                        <Separator Height="1" Background="#30FFFFFF"/>
-                        
-                        <!-- Current Layer Info (shown during drawing session) -->
-                        <StackPanel Name="CurrentLayerPanel" Spacing="8" IsVisible="False">
-                            <TextBlock Text="CURRENT LAYER" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
+                    </Border>
+                    
+                    <!-- Current Layer Info (shown during drawing session) -->
+                    <Border Name="CurrentLayerPanel" Classes="Card" IsVisible="False">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="CardTitle" Text="📍 Current Layer"/>
                             
-                            <Border Background="#30000000" CornerRadius="4" Padding="8">
-                                <StackPanel Spacing="8">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Border Name="CurrentColorSwatch" Width="32" Height="32" CornerRadius="4" 
-                                                Background="Gray" BorderBrush="White" BorderThickness="1"/>
-                                        <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Name="CurrentLayerText" Text="Layer 1 of 12" FontWeight="Bold"/>
-                                            <TextBlock Name="CurrentColorHex" Text="#FFFFFF" FontSize="11" Opacity="0.7"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                    
-                                    <TextBlock Name="InstructionText" Text="Select this color in your drawing app, then press SHIFT when ready." 
-                                               TextWrapping="Wrap" FontSize="11"/>
-                                    
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Button Name="SkipLayerButton" Content="Skip Layer" Width="100"/>
-                                        <Button Name="StopSessionButton" Content="Stop Session" Width="100" Background="#C62828"/>
+                            <StackPanel Spacing="12">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <Border Name="CurrentColorSwatch" Classes="ColorSwatch Selected"
+                                            Width="48" Height="48" 
+                                            Background="Gray"/>
+                                    <StackPanel VerticalAlignment="Center" Spacing="4">
+                                        <TextBlock Name="CurrentLayerText" 
+                                                   Text="Layer 1 of 12" 
+                                                   FontSize="14" FontWeight="SemiBold"/>
+                                        <TextBlock Name="CurrentColorHex" 
+                                                   Text="#FFFFFF" 
+                                                   FontSize="12" FontFamily="Consolas"
+                                                   Foreground="{DynamicResource ThemeSecondaryForeground}"/>
                                     </StackPanel>
                                 </StackPanel>
-                            </Border>
+                                
+                                <Border Background="{DynamicResource ThemePastelBlue}"
+                                        CornerRadius="6" Padding="12">
+                                    <TextBlock Name="InstructionText" 
+                                               Text="Select this color in your drawing app, then press SHIFT when ready." 
+                                               TextWrapping="Wrap" FontSize="12"
+                                               Foreground="{DynamicResource ThemeForegroundColor}"/>
+                                </Border>
+                                
+                                <Grid ColumnDefinitions="*,8,*">
+                                    <Button Name="SkipLayerButton" Grid.Column="0"
+                                            Content="Skip Layer" HorizontalAlignment="Stretch"/>
+                                    <Button Name="StopSessionButton" Grid.Column="2"
+                                            Classes="Danger"
+                                            Content="Stop Session" HorizontalAlignment="Stretch"/>
+                                </Grid>
+                            </StackPanel>
                         </StackPanel>
-                        
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
+                    </Border>
+                    
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>
