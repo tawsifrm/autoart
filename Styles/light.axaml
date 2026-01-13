@@ -13,7 +13,7 @@
             <SolidColorBrush x:Key="ThemeBackgroundColor" Color="#FAFAFA"/>
             <SolidColorBrush x:Key="ThemeToolbarColor" Color="#FFFFFF"/>
             <SolidColorBrush x:Key="ThemeForegroundColor" Color="#1A1A1A"/>
-            <SolidColorBrush x:Key="ThemeSecondaryForeground" Color="#666666"/>
+            <SolidColorBrush x:Key="ThemeSecondaryForeground" Color="#555555"/>
             
             <!--Multi-Accent Palette-->
             <SolidColorBrush x:Key="ThemeAccentPrimary" Color="#6366F1"/>
