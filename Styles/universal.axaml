@@ -1,0 +1,107 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!--Universal Styles that apply regardless of theme-->
+    
+    <!--Toolbar Styles-->
+    <Style Selector="Canvas.Toolbar">
+        <Setter Property="Background" Value="{DynamicResource ThemeToolbarColor}"/>
+    </Style>
+    
+    <Style Selector="Label.Title">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>
+    </Style>
+    
+    <Style Selector="Label.Bold">
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    
+    <Style Selector="Control.ClickThru">
+        <Setter Property="IsHitTestVisible" Value="False"/>
+    </Style>
+    
+    <!--Toolbar Buttons-->
+    <Style Selector="Button.ToolbarButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+    
+    <Style Selector="Button.ToolbarButton:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#30FFFFFF"/>
+    </Style>
+    
+    <Style Selector="Button.CloseApp:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#E81123"/>
+    </Style>
+    
+    <!--Main Body-->
+    <Style Selector="Image.MainBody">
+        <Setter Property="Stretch" Value="Fill"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+    </Style>
+    
+    <!--Image Preview-->
+    <Style Selector="Border.ImagePreview">
+        <Setter Property="Background" Value="{DynamicResource ThemeImagePreviewBackground}"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+    
+    <!--Buttons-->
+    <Style Selector="Button">
+        <Setter Property="Background" Value="{DynamicResource ThemeButtonBackground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="12 6"/>
+    </Style>
+    
+    <Style Selector="Button:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ThemeButtonHoverBackground}"/>
+    </Style>
+    
+    <Style Selector="Button:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ThemeButtonPressedBackground}"/>
+    </Style>
+    
+    <Style Selector="Button:disabled /template/ ContentPresenter">
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+    
+    <!--TextBox-->
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="{DynamicResource ThemeTextBoxBackground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderColor}"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="8 4"/>
+    </Style>
+    
+    <!--ComboBox-->
+    <Style Selector="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource ThemeTextBoxBackground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderColor}"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+    
+    <!--CheckBox-->
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>
+    </Style>
+    
+    <!--Separator-->
+    <Style Selector="Separator">
+        <Setter Property="Background" Value="{DynamicResource ThemeSeparatorColor}"/>
+        <Setter Property="Margin" Value="0 4"/>
+    </Style>
+    
+    <!--Slider-->
+    <Style Selector="Slider">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentColor}"/>
+    </Style>
+    
+</Styles>

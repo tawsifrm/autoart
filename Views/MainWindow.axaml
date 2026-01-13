@@ -1,0 +1,208 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avaloniaControls="clr-namespace:UVtools.AvaloniaControls;assembly=UVtools.AvaloniaControls"
+
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+        x:Name="AutoArtWindow"
+        x:Class="AutoArt.Views.MainWindow"
+        
+        Width="800"
+        Height="500"
+        CanResize="True"
+        DragDrop.AllowDrop="False"
+
+        MinWidth="800"
+        MinHeight="500"
+        WindowStartupLocation="CenterScreen"
+        
+        Title="AutoArt"
+        
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="20"
+        SystemDecorations="BorderOnly">
+    
+    <Window.Styles>
+        <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml"/>
+    </Window.Styles>
+    
+    <Grid RowDefinitions="20,1*">
+        <!--Toolbar-->
+        <Canvas Grid.Row="0" Width="{Binding $parent[Window].Bounds.Width}" Height="20">
+            <!--Background-->
+            <Canvas Classes="Toolbar ClickThru" Width="{Binding $parent[Window].Bounds.Width}" Height="20" />
+
+            <!--Decorations-->
+            <StackPanel Classes="Toolbar" Orientation="Horizontal">
+                <Label Classes="Title Bold ClickThru" Margin="0" Padding="6 0 0 0" Height="20" 
+                       VerticalContentAlignment="Center" Content="AutoArt"/>
+                <Label Classes="Title ClickThru" Margin="4 0 0 0" Padding="0" Height="20" 
+                       VerticalContentAlignment="Center" Content="v1.0.0" FontSize="10" Opacity="0.7"/>
+            </StackPanel>
+
+            <!--Buttons-->
+            <Grid Name="ToolbarButtons" Classes="ToolbarButtons" Width="{Binding $parent[Window].Bounds.Width}"
+                  ColumnDefinitions="*,20,20,20">
+                <Button Classes="MinimizeApp ToolbarButton" Name="MinimizeAppButton" Grid.Column="2" Width="20"
+                        Height="20" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                        Padding="0">
+                    -
+                </Button>
+                <Button Classes="CloseApp ToolbarButton" Name="CloseAppButton" Grid.Column="3" Width="20" Height="20"
+                        FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0">
+                    ✕
+                </Button>
+            </Grid>
+        </Canvas>
+
+        <!--Body-->
+        <Image Classes="MainBody" Grid.Row="1" />
+        
+        <Grid Classes="Body" Grid.Row="1" Name="Body" Margin="8" ColumnDefinitions="1*,8,280">
+            
+            <!-- Left Panel: Image Preview -->
+            <Grid Grid.Column="0" RowDefinitions="*,8,Auto">
+                <Canvas Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" VerticalAlignment="Stretch">
+                    <Border Classes="ImagePreview" Width="{Binding $parent.Bounds.Width}" IsHitTestVisible="False"
+                            Height="{Binding $parent.Bounds.Height}" Background="#20000000" CornerRadius="4">
+                    </Border>
+                    <avaloniaControls:AdvancedImageBox Name="ImagePreview" ShowGrid="False" 
+                                                       ZoomWithMouseWheelBehaviour="ZoomLevelsAltNative" AutoZoomToFit="True"
+                                                       Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}">
+                    </avaloniaControls:AdvancedImageBox>
+                </Canvas>
+                
+                <!-- Status Bar -->
+                <Border Grid.Row="2" Background="#30000000" CornerRadius="4" Padding="8 4">
+                    <TextBlock Name="StatusText" Text="Load an image to begin" VerticalAlignment="Center" FontSize="12"/>
+                </Border>
+            </Grid>
+            
+            <!-- Right Panel: Controls -->
+            <Border Grid.Column="2" Background="#20000000" CornerRadius="4" Padding="12">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="12">
+                        
+                        <!-- Import Section -->
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="IMAGE" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
+                            <Button Name="ImportButton" Content="Import Image" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                        
+                        <Separator Height="1" Background="#30FFFFFF"/>
+                        
+                        <!-- Color Splitting Options -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="COLOR SPLITTING" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
+                            
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Colors:" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                <TextBox Name="ColorsInput" Grid.Row="0" Grid.Column="1" Text="12" Width="60" HorizontalAlignment="Left" Margin="0,0,0,6"/>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Mode:" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                <ComboBox Name="ModeSelector" Grid.Row="1" Grid.Column="1" SelectedIndex="0" HorizontalAlignment="Stretch" Margin="0,0,0,6">
+                                    <ComboBoxItem Content="KMeans OKLab"/>
+                                    <ComboBoxItem Content="KMeans CIELab"/>
+                                    <ComboBoxItem Content="KMeans RGB"/>
+                                    <ComboBoxItem Content="MedianCut OKLab"/>
+                                    <ComboBoxItem Content="MedianCut CIELab"/>
+                                    <ComboBoxItem Content="MedianCut RGB"/>
+                                </ComboBox>
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Initializer:" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                <ComboBox Name="InitializerSelector" Grid.Row="2" Grid.Column="1" SelectedIndex="0" HorizontalAlignment="Stretch" Margin="0,0,0,6">
+                                    <ComboBoxItem Content="KMeans++"/>
+                                    <ComboBoxItem Content="MedianCut"/>
+                                </ComboBox>
+                                
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Iterations:" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                <TextBox Name="IterationsInput" Grid.Row="3" Grid.Column="1" Text="12" Width="60" HorizontalAlignment="Left" Margin="0,0,0,6"/>
+                                
+                                <CheckBox Name="RemoveStrayCheckbox" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" 
+                                          Content="Remove stray pixels" IsChecked="False"/>
+                            </Grid>
+                            
+                            <Button Name="SplitButton" Content="Split Colors" HorizontalAlignment="Stretch" IsEnabled="False"/>
+                        </StackPanel>
+                        
+                        <Separator Height="1" Background="#30FFFFFF"/>
+                        
+                        <!-- Color Layers Preview -->
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="COLOR LAYERS" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
+                            <TextBlock Name="LayerCountText" Text="No layers" FontSize="11" Opacity="0.5"/>
+                            <Border Background="#20000000" CornerRadius="4" MinHeight="60" Padding="4">
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                    <WrapPanel Name="ColorLayersPanel" Orientation="Horizontal">
+                                        <!-- Color swatches will be added dynamically -->
+                                    </WrapPanel>
+                                </ScrollViewer>
+                            </Border>
+                        </StackPanel>
+                        
+                        <Separator Height="1" Background="#30FFFFFF"/>
+                        
+                        <!-- Drawing Section -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="DRAWING" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
+                            
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Algorithm:" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                <ComboBox Name="AlgorithmSelector" Grid.Row="0" Grid.Column="1" SelectedIndex="0" HorizontalAlignment="Stretch" Margin="0,0,0,6">
+                                    <ComboBoxItem Content="DFS (Depth-First)"/>
+                                    <ComboBoxItem Content="Edge-Following"/>
+                                </ComboBox>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Scale:" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,50" Margin="0,0,0,6">
+                                    <Slider Name="ScaleSlider" Grid.Column="0" Minimum="1" Maximum="200" Value="100" 
+                                            TickFrequency="1" VerticalAlignment="Center"/>
+                                    <TextBox Name="ScaleInput" Grid.Column="1" Text="100%" Width="50" 
+                                             HorizontalContentAlignment="Center" Margin="4,0,0,0"/>
+                                </Grid>
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Speed:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <Slider Name="SpeedSlider" Grid.Row="2" Grid.Column="1" Minimum="1" Maximum="100" Value="50"/>
+                            </Grid>
+                            
+                            <Button Name="StartDrawingButton" Content="Start Drawing Session" 
+                                    HorizontalAlignment="Stretch" IsEnabled="False" 
+                                    Background="#2E7D32" Foreground="White"/>
+                        </StackPanel>
+                        
+                        <Separator Height="1" Background="#30FFFFFF"/>
+                        
+                        <!-- Current Layer Info (shown during drawing session) -->
+                        <StackPanel Name="CurrentLayerPanel" Spacing="8" IsVisible="False">
+                            <TextBlock Text="CURRENT LAYER" FontWeight="Bold" FontSize="11" Opacity="0.7"/>
+                            
+                            <Border Background="#30000000" CornerRadius="4" Padding="8">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border Name="CurrentColorSwatch" Width="32" Height="32" CornerRadius="4" 
+                                                Background="Gray" BorderBrush="White" BorderThickness="1"/>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Name="CurrentLayerText" Text="Layer 1 of 12" FontWeight="Bold"/>
+                                            <TextBlock Name="CurrentColorHex" Text="#FFFFFF" FontSize="11" Opacity="0.7"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    
+                                    <TextBlock Name="InstructionText" Text="Select this color in your drawing app, then press SHIFT when ready." 
+                                               TextWrapping="Wrap" FontSize="11"/>
+                                    
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button Name="SkipLayerButton" Content="Skip Layer" Width="100"/>
+                                        <Button Name="StopSessionButton" Content="Stop Session" Width="100" Background="#C62828"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                        
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

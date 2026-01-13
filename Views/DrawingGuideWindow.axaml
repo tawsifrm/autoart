@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="200"
+        x:Class="AutoArt.Views.DrawingGuideWindow"
+        Title="AutoArt - Drawing Guide"
+        
+        Width="320"
+        Height="200"
+        CanResize="False"
+        
+        WindowStartupLocation="CenterScreen"
+        
+        SystemDecorations="None"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="#E0202020"
+        Topmost="True">
+    
+    <Border CornerRadius="8" BorderBrush="#40FFFFFF" BorderThickness="1" Padding="16">
+        <StackPanel Spacing="12">
+            
+            <!-- Header -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                <TextBlock Text="AutoArt" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Drawing Guide" FontSize="18" Foreground="#80FFFFFF"/>
+            </StackPanel>
+            
+            <!-- Current Layer Info -->
+            <Border Background="#30FFFFFF" CornerRadius="6" Padding="12">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                    
+                    <!-- Color Swatch -->
+                    <Border Name="ColorSwatch" Grid.RowSpan="2" Width="48" Height="48" CornerRadius="6"
+                            Background="Gray" BorderBrush="White" BorderThickness="2" Margin="0,0,12,0"/>
+                    
+                    <!-- Layer Info -->
+                    <TextBlock Name="LayerText" Grid.Row="0" Grid.Column="1" 
+                               Text="Layer 1 of 12" FontSize="16" FontWeight="Bold" Foreground="White"
+                               VerticalAlignment="Bottom" Margin="0,0,0,4"/>
+                    <TextBlock Name="ColorHexText" Grid.Row="1" Grid.Column="1" 
+                               Text="#FFFFFF" FontSize="14" Foreground="#A0FFFFFF"
+                               VerticalAlignment="Top"/>
+                </Grid>
+            </Border>
+            
+            <!-- Instructions -->
+            <TextBlock Name="InstructionText" 
+                       Text="Select this color in your drawing app, then press SHIFT when ready."
+                       TextWrapping="Wrap" TextAlignment="Center" FontSize="12" Foreground="#C0FFFFFF"/>
+            
+            <!-- Progress Indicator -->
+            <ProgressBar Name="DrawingProgress" Height="4" IsVisible="False" 
+                         IsIndeterminate="True" Foreground="#4CAF50"/>
+            
+            <!-- Buttons -->
+            <Grid ColumnDefinitions="*,8,*">
+                <Button Name="SkipButton" Grid.Column="0" Content="Skip Layer" 
+                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <Button Name="StopButton" Grid.Column="2" Content="Stop Session" 
+                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                        Background="#C62828"/>
+            </Grid>
+            
+        </StackPanel>
+    </Border>
+</Window>

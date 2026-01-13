@@ -1,0 +1,37 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!--#DarkTheme-->
+    
+    <Style Selector=":is(Window)">
+        <Setter Property="Background" Value="#1E1E1E"/>
+    </Style>
+    
+    <Styles.Resources>
+        <ResourceDictionary>
+            <!--Core Colors-->
+            <SolidColorBrush x:Key="ThemeBackgroundColor" Color="#1E1E1E"/>
+            <SolidColorBrush x:Key="ThemeToolbarColor" Color="#2D2D2D"/>
+            <SolidColorBrush x:Key="ThemeForegroundColor" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="ThemeSecondaryForeground" Color="#A0A0A0"/>
+            
+            <!--Accent-->
+            <SolidColorBrush x:Key="ThemeAccentColor" Color="#4CAF50"/>
+            <SolidColorBrush x:Key="ThemeAccentHover" Color="#66BB6A"/>
+            
+            <!--Button Colors-->
+            <SolidColorBrush x:Key="ThemeButtonBackground" Color="#3C3C3C"/>
+            <SolidColorBrush x:Key="ThemeButtonHoverBackground" Color="#4A4A4A"/>
+            <SolidColorBrush x:Key="ThemeButtonPressedBackground" Color="#2A2A2A"/>
+            
+            <!--TextBox Colors-->
+            <SolidColorBrush x:Key="ThemeTextBoxBackground" Color="#2D2D2D"/>
+            <SolidColorBrush x:Key="ThemeBorderColor" Color="#404040"/>
+            
+            <!--Other-->
+            <SolidColorBrush x:Key="ThemeImagePreviewBackground" Color="#252525"/>
+            <SolidColorBrush x:Key="ThemeSeparatorColor" Color="#404040"/>
+        </ResourceDictionary>
+    </Styles.Resources>
+    
+</Styles>

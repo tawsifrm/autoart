@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <AssemblyName>AutoArt</AssemblyName>
+        <RootNamespace>AutoArt</RootNamespace>
+        <FileVersion>1.0.0.0</FileVersion>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <NeutralLanguage>en</NeutralLanguage>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectCapability Include="Avalonia"/>
+        <TrimmerRootAssembly Include="Avalonia.Themes.Fluent"/>
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
+
+    <!-- Define WINDOWS constant for conditional compilation -->
+    <PropertyGroup>
+        <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+    </PropertyGroup>
+
+    <!-- NuGet Packages -->
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.2.4" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.4" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.2.4" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.4" />
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.2.4" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.4" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.4" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="SharpHook" Version="5.3.8" />
+        <PackageReference Include="SimWinMouse" Version="1.0.3" />
+        <PackageReference Include="SkiaSharp" Version="2.88.9" />
+        <PackageReference Include="UVtools.AvaloniaControls" Version="4.0.4" />
+    </ItemGroup>
+
+    <!-- Resources -->
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Styles\**"/>
+    </ItemGroup>
+</Project>

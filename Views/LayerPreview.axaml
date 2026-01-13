@@ -1,0 +1,86 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+        x:Class="AutoArt.Views.LayerPreview"
+        Title="Layer Preview"
+        Background="#0fff"
+        
+        SystemDecorations="None"
+        TransparencyLevelHint="None"
+        Topmost="True"
+        
+        WindowStartupLocation="Manual"
+        
+        PointerMoved="OnPointerMoved">
+    
+    <Panel>
+        <!-- Preview Image -->
+        <Image Opacity="0.9" Name="PreviewImage" Cursor="SizeAll" 
+               PointerPressed="OnPointerPressed" 
+               PointerReleased="OnPointerReleased"/>
+        
+        <!-- Control Panel -->
+        <Grid VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Toggle Button -->
+            <Button Name="TogglePanelButton" Click="OnTogglePanelClick" 
+                    Background="#D0202020" VerticalAlignment="Top" 
+                    Width="18" Height="18" Padding="0" 
+                    BorderBrush="DarkSlateGray" BorderThickness="0,1,1,1" 
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                    HorizontalAlignment="Left" Grid.Column="1"
+                    FontSize="10" Foreground="White">
+                ▼
+            </Button>
+            
+            <!-- Edit Panel -->
+            <Panel Name="EditPanel" IsVisible="False" Grid.Column="0">
+                <Border Background="#E0202020" BorderBrush="DarkSlateGray" BorderThickness="1" CornerRadius="0,0,4,0"/>
+                <StackPanel Margin="8" Spacing="6">
+                    
+                    <!-- Layer Info -->
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border Name="ColorSwatch" Width="24" Height="24" CornerRadius="4" 
+                                Background="Gray" BorderBrush="White" BorderThickness="1"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Name="LayerInfoText" Text="Layer 1/12" FontSize="12" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Name="ColorHexText" Text="#FFFFFF" FontSize="10" Foreground="#A0FFFFFF"/>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <Separator Height="1" Background="#40FFFFFF"/>
+                    
+                    <!-- Position Controls -->
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="X:" VerticalAlignment="Center" FontSize="11" Foreground="White" Width="16"/>
+                        <TextBox Name="XPos" Width="60" FontSize="11" Text="0" TextChanged="OnXPosChanged"/>
+                        <CheckBox Name="XLock" VerticalAlignment="Center" Click="OnXLockChanged">
+                            <TextBlock Text="Lock" FontSize="10" Foreground="White"/>
+                        </CheckBox>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="Y:" VerticalAlignment="Center" FontSize="11" Foreground="White" Width="16"/>
+                        <TextBox Name="YPos" Width="60" FontSize="11" Text="0" TextChanged="OnYPosChanged"/>
+                        <CheckBox Name="YLock" VerticalAlignment="Center" Click="OnYLockChanged">
+                            <TextBlock Text="Lock" FontSize="10" Foreground="White"/>
+                        </CheckBox>
+                    </StackPanel>
+                    
+                    <Separator Height="1" Background="#40FFFFFF"/>
+                    
+                    <!-- Instructions -->
+                    <TextBlock Text="Press SHIFT to draw this layer" FontSize="10" Foreground="#C0FFFFFF" TextWrapping="Wrap"/>
+                    <TextBlock Text="Press ESC to cancel" FontSize="10" Foreground="#80FFFFFF"/>
+                    
+                </StackPanel>
+            </Panel>
+        </Grid>
+    </Panel>
+</Window>

@@ -1,0 +1,13 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AutoArt.App"
+             RequestedThemeVariant="Dark">
+    
+    <Application.Styles>
+        <FluentTheme DensityStyle="Compact"/>
+        <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml"/>
+        <StyleInclude Source="avares://AutoArt/Styles/universal.axaml" />
+        <StyleInclude Source="avares://AutoArt/Styles/Overrides/CheckBox.axaml" />
+        <StyleInclude Source="avares://AutoArt/Styles/dark.axaml" />
+    </Application.Styles>
+</Application>
