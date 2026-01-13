@@ -117,7 +117,7 @@
                                                FontSize="16" FontWeight="SemiBold"
                                                HorizontalAlignment="Center"
                                                Foreground="{DynamicResource ThemeForegroundColor}"/>
-                                    <TextBlock Text="Drag and drop or click Import Image below" 
+                                    <TextBlock Text="Click Import Image below to get started" 
                                                FontSize="13"
                                                HorizontalAlignment="Center"
                                                Foreground="{DynamicResource ThemeSecondaryForeground}"
