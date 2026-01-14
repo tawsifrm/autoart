@@ -435,7 +435,10 @@ public partial class MainWindow : Window
     {
         _guideWindow?.Close();
         _guideWindow = new DrawingGuideWindow();
-        _guideWindow.SkipRequested += OnGuideSkipRequested;
+
+        // Subscribe to layer navigation events
+        _guideWindow.PreviousLayerRequested += OnGuidePreviousLayerRequested;
+        _guideWindow.NextLayerRequested += OnGuideNextLayerRequested;
         _guideWindow.StopRequested += OnGuideStopRequested;
 
         if (_appState.CurrentLayer != null)
@@ -618,9 +621,68 @@ public partial class MainWindow : Window
         SkipCurrentLayer();
     }
 
-    private void OnGuideSkipRequested(object? sender, EventArgs e)
+    /// <summary>
+    /// Handles the Previous Layer button click from the guide window.
+    /// Navigates to the previous layer without affecting drawing order or session state.
+    /// </summary>
+    private void OnGuidePreviousLayerRequested(object? sender, EventArgs e)
     {
-        SkipCurrentLayer();
+        NavigateToPreviousLayer();
+    }
+
+    /// <summary>
+    /// Handles the Next Layer button click from the guide window.
+    /// Navigates to the next layer without affecting drawing order or session state.
+    /// </summary>
+    private void OnGuideNextLayerRequested(object? sender, EventArgs e)
+    {
+        NavigateToNextLayer();
+    }
+
+    /// <summary>
+    /// Navigates to the previous layer for manual layer selection.
+    /// Does not affect drawing order or auto-drawing logic.
+    /// </summary>
+    private void NavigateToPreviousLayer()
+    {
+        // Ensure we're not already on the first layer
+        if (_appState.CurrentLayerIndex <= 0) return;
+
+        // Save position before navigating
+        if (_layerPreview != null)
+        {
+            _lastPreviewPosition = _layerPreview.LastPosition;
+        }
+
+        // Move to previous layer
+        _appState.CurrentLayerIndex--;
+
+        // Update the display and preview
+        UpdateCurrentLayerDisplay();
+        UpdateLayerPreview();
+    }
+
+    /// <summary>
+    /// Navigates to the next layer for manual layer selection.
+    /// Does not affect drawing order or auto-drawing logic.
+    /// </summary>
+    private void NavigateToNextLayer()
+    {
+        // Ensure we're not already on the last layer
+        if (_appState.CurrentLayerIndex >= _appState.TotalLayers - 1) return;
+
+        // Save position before navigating
+        if (_layerPreview != null)
+        {
+            _lastPreviewPosition = _layerPreview.LastPosition;
+        }
+
+        // Move to next layer
+        _appState.CurrentLayerIndex++;
+
+        // Update the display and preview
+        UpdateCurrentLayerDisplay();
+        UpdateLayerPreview();
     }
 
     private void SkipCurrentLayer()
