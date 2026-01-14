@@ -65,13 +65,28 @@
                                Foreground="{DynamicResource ThemeForegroundColor}"
                                VerticalAlignment="Bottom" 
                                Margin="0,0,0,6"/>
-                    <TextBlock Name="ColorHexText" 
-                               Grid.Row="1" Grid.Column="1" 
-                               Text="#FFFFFF" 
-                               FontSize="16" 
-                               FontFamily="Consolas"
-                               Foreground="{DynamicResource ThemeSecondaryForeground}"
-                               VerticalAlignment="Top"/>
+                    
+                    <!-- Hex Code with Copy Button -->
+                    <StackPanel Grid.Row="1" Grid.Column="1" 
+                                Orientation="Horizontal" 
+                                Spacing="6"
+                                VerticalAlignment="Top">
+                        <TextBlock Name="ColorHexText" 
+                                   Text="#FFFFFF" 
+                                   FontSize="16" 
+                                   FontFamily="Consolas"
+                                   Foreground="{DynamicResource ThemeSecondaryForeground}"
+                                   VerticalAlignment="Center"/>
+                        <Button Name="CopyHexButton"
+                                Content="📋"
+                                FontSize="14"
+                                Padding="4,2"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                ToolTip.Tip="Copy hex code to clipboard"/>
+                    </StackPanel>
                 </Grid>
             </Border>
             
@@ -101,20 +116,27 @@
                          Foreground="{DynamicResource ThemeAccentSuccess}"
                          CornerRadius="2"/>
             
-            <!-- Action Buttons -->
-            <Grid ColumnDefinitions="*,12,*">
-                <Button Name="SkipButton" 
+            <!-- Layer Navigation Buttons -->
+            <Grid ColumnDefinitions="*,8,*">
+                <Button Name="PreviousLayerButton" 
                         Grid.Column="0" 
-                        Content="Skip Layer" 
+                        Content="◀ Previous Layer" 
                         HorizontalAlignment="Stretch" 
-                        HorizontalContentAlignment="Center"/>
-                <Button Name="StopButton" 
+                        HorizontalContentAlignment="Center"
+                        IsEnabled="False"/>
+                <Button Name="NextLayerButton" 
                         Grid.Column="2" 
-                        Classes="Danger"
-                        Content="Stop Session" 
+                        Content="Next Layer ▶" 
                         HorizontalAlignment="Stretch" 
                         HorizontalContentAlignment="Center"/>
             </Grid>
+            
+            <!-- Stop Session Button -->
+            <Button Name="StopButton" 
+                    Classes="Danger"
+                    Content="Stop Session" 
+                    HorizontalAlignment="Stretch" 
+                    HorizontalContentAlignment="Center"/>
             
         </StackPanel>
     </Border>
