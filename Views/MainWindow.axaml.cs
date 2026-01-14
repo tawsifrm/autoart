@@ -175,7 +175,7 @@ public partial class MainWindow : Window
     {
         var fileTypes = new FilePickerFileType("Image files")
         {
-            Patterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp" },
+            Patterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.webp" },
             MimeTypes = new[] { "image/*" }
         };
 
