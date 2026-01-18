@@ -31,6 +31,20 @@ public static class Drawing
     public static bool IsSkipping;
     public static bool FreeDraw2 = false;
 
+    /// <summary>
+    /// When true, enables simplified mode optimizations during drawing.
+    /// In simplified mode, action sets with fewer than MinActionSetSize steps are discarded
+    /// to improve drawing performance by skipping tiny, insignificant fragments.
+    /// </summary>
+    public static bool SimplifiedMode = false;
+
+    /// <summary>
+    /// Minimum number of steps required for an action set to be drawn in simplified mode.
+    /// Action sets with fewer steps are considered too small to be visually significant
+    /// and are discarded to improve drawing performance.
+    /// </summary>
+    public const int MinActionSetSize = 100;
+
     public static Vector2 LastPos = Config.Preview_LastLockPos;
 
     public static bool ShowPopup =
@@ -518,6 +532,41 @@ public static class Drawing
         // Log post-optimization statistics
         var postOptStats = ActionSetOptimizer.AnalyzeActionSets(Actions);
         Utils.Log($"[Post-Optimization] {postOptStats}");
+
+        // =====================================================================================
+        // SIMPLIFIED MODE: DISCARD SMALL ACTION SETS
+        // =====================================================================================
+        // In simplified mode, action sets with fewer than MinActionSetSize steps are discarded.
+        // These small fragments typically represent:
+        // - Tiny isolated pixel clusters that are visually insignificant
+        // - Noise or artifacts from the color quantization process
+        // - Detail that won't be noticeable in the final drawing
+        // 
+        // Discarding them provides significant performance improvement by reducing:
+        // - The number of mouse-up/move/mouse-down cycles
+        // - Overall drawing time
+        // 
+        // This is only applied in simplified mode to maintain exact drawing behavior
+        // when the user hasn't opted into simplification.
+        // =====================================================================================
+        if (SimplifiedMode)
+        {
+            int originalCount = Actions.Count;
+            int originalSteps = Actions.Sum(a => a.Count);
+
+            Actions = Actions.Where(a => a.Count >= MinActionSetSize).ToList();
+
+            int removedCount = originalCount - Actions.Count;
+            int removedSteps = originalSteps - Actions.Sum(a => a.Count);
+
+            Utils.Log($"[Simplified Mode] Discarded {removedCount} action sets ({removedSteps} steps) below {MinActionSetSize} step threshold");
+
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                _dataDisplay.DataDisplayText.Text = $"Simplified: Removed {removedCount} small fragments";
+            });
+            await NOP(500000); // Brief pause to show the message
+        }
 
         int ActionsComplete = 0;
         foreach (List<Vector2> Action in Actions)

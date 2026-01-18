@@ -195,6 +195,11 @@
                                 <CheckBox Name="RemoveStrayCheckbox" 
                                           Content="Remove stray pixels" IsChecked="False"
                                           Margin="0,4,0,0"/>
+                                
+                                <CheckBox Name="SimplifiedSplitCheckbox" 
+                                          Content="Enable Simplified Split" IsChecked="False"
+                                          ToolTip.Tip="Merges visually similar colors to reduce layer count and improve drawing performance. The number of colors becomes a target rather than a guarantee."
+                                          Margin="0,4,0,0"/>
                             </StackPanel>
                             
                             <Button Name="SplitButton" Content="Split Colors" 

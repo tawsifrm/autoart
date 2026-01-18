@@ -165,7 +165,8 @@ public partial class MainWindow : Window
             Mode = ModeSelector.SelectedIndex,
             Initializer = InitializerSelector.SelectedIndex,
             Iterations = Math.Clamp(iterations, 1, 100),
-            RemoveStrayPixels = RemoveStrayCheckbox.IsChecked == true
+            RemoveStrayPixels = RemoveStrayCheckbox.IsChecked == true,
+            SimplifiedSplit = SimplifiedSplitCheckbox.IsChecked == true
         };
     }
 
@@ -368,6 +369,10 @@ public partial class MainWindow : Window
             clickDelay: 1000,
             algorithm: (byte)AlgorithmSelector.SelectedIndex
         );
+
+        // Set simplified mode flag for drawing optimizations
+        // When enabled, small action sets (< 100 steps) will be discarded during drawing
+        AutoArt.Core.Drawing.SimplifiedMode = _splitConfig.SimplifiedSplit;
 
         // Show current layer panel
         CurrentLayerPanel.IsVisible = true;
