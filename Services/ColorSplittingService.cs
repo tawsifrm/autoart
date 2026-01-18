@@ -111,6 +111,7 @@ public class ColorSplittingService
 
     /// <summary>
     /// Extracts individual color layers from the quantized image.
+    /// Excludes layers that represent transparent/background areas.
     /// </summary>
     /// <returns>List of ColorLayer objects.</returns>
     private List<ColorLayer> ExtractLayers()
@@ -126,6 +127,16 @@ public class ColorSplittingService
         foreach (var (color, _) in _colorDictionary)
         {
             var layerBitmap = GetLayerFromBitmap(_quantizedBitmap, color);
+
+            // Skip this layer if it represents transparent/background pixels
+            // This happens when images have transparency - the algorithm assigns black (or near-black)
+            // to transparent areas. We detect this by checking if the layer has no opaque pixels.
+            if (IsTransparentLayer(layerBitmap))
+            {
+                layerBitmap.Dispose();
+                continue;
+            }
+
             var hexColor = color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
             layers.Add(new ColorLayer(index, layerBitmap, hexColor));
             index++;
@@ -135,8 +146,34 @@ public class ColorSplittingService
     }
 
     /// <summary>
+    /// Checks if a layer bitmap represents transparent/background pixels.
+    /// A layer is considered transparent if it has no opaque pixels (all alpha = 0).
+    /// </summary>
+    private unsafe bool IsTransparentLayer(SKBitmap bitmap)
+    {
+        var ptr = (byte*)bitmap.GetPixels().ToPointer();
+        int totalPixels = bitmap.Width * bitmap.Height;
+
+        // Check if there are any opaque pixels in this layer
+        for (int i = 0; i < totalPixels; i++)
+        {
+            // Skip to alpha channel (BGRA format, so alpha is at offset 3)
+            byte alpha = ptr[i * 4 + 3];
+            if (alpha > 0)
+            {
+                // Found at least one opaque pixel - this is a valid layer
+                return false;
+            }
+        }
+
+        // No opaque pixels found - this layer represents transparency
+        return true;
+    }
+
+    /// <summary>
     /// Extracts a single color layer from a bitmap.
     /// Creates a new bitmap containing only pixels matching the specified color.
+    /// Only includes pixels that are opaque (alpha > 0) - transparent pixels are excluded.
     /// </summary>
     private unsafe SKBitmap GetLayerFromBitmap(SKBitmap bitmap, Color color)
     {
@@ -157,8 +194,9 @@ public class ColorSplittingService
                 byte r = *srcPtr++;
                 byte a = *srcPtr++;
 
-                // If color matches, copy to output
-                if (r == color.R && g == color.G && b == color.B)
+                // Only include pixels that match the color AND are opaque
+                // This ensures transparent areas from the original image are not included
+                if (r == color.R && g == color.G && b == color.B && a > 0)
                 {
                     *dstPtr++ = b;
                     *dstPtr++ = g;

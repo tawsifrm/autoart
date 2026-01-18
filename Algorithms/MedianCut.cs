@@ -12,9 +12,9 @@ public class MedianCut
 {
     public (SKBitmap quantizedBitmap, Dictionary<Color, int> colorCounts) Quantize(SKBitmap bitmap, int numColors, bool useLAB = false)
     {
-        var pixels = ExtractPixels(bitmap, useLAB);
+        var (pixels, alphaValues) = ExtractPixelsWithAlpha(bitmap, useLAB);
         var representativeColors = PerformMedianCut(pixels, numColors, useLAB);
-        return MapPixelsToClosestColors(bitmap, pixels, representativeColors, useLAB);
+        return MapPixelsToClosestColors(bitmap, pixels, representativeColors, useLAB, alphaValues);
     }
 
     public float[][] PerformMedianCut(float[][] pixels, int numColors, bool useLAB)
@@ -34,11 +34,16 @@ public class MedianCut
         return bins.AsParallel().Select(CalculateAverage).ToArray();
     }
 
+    /// <summary>
+    /// Maps pixels to closest representative colors, preserving transparency.
+    /// Transparent pixels are not included in the color counts.
+    /// </summary>
     private unsafe (SKBitmap quantizedBitmap, Dictionary<Color, int> colorCounts) MapPixelsToClosestColors(
         SKBitmap bitmap,
         float[][] pixels,
         float[][] representativeColors,
-        bool useLAB)
+        bool useLAB,
+        byte[] alphaValues)
     {
         int width = bitmap.Width;
         int height = bitmap.Height;
@@ -50,6 +55,19 @@ public class MedianCut
 
         Parallel.For(0, pixels.Length, i =>
         {
+            byte alpha = alphaValues[i];
+
+            // Preserve transparency - transparent pixels stay transparent
+            if (alpha == 0)
+            {
+                int idx = i * 4;
+                outputPtr[idx] = 0;
+                outputPtr[idx + 1] = 0;
+                outputPtr[idx + 2] = 0;
+                outputPtr[idx + 3] = 0;
+                return;
+            }
+
             var closestColor = FindClosestColor(pixels[i], representativeColors);
 
             float r, g, b;
@@ -67,30 +85,35 @@ public class MedianCut
                 r = closestColor[2];
             }
 
-            int idx = i * 4;
+            int idx2 = i * 4;
             byte br = (byte)Math.Clamp(b, 0, 255);
             byte bg = (byte)Math.Clamp(g, 0, 255);
             byte bb = (byte)Math.Clamp(r, 0, 255);
-            byte alpha = 255;
 
-            outputPtr[idx] = br;
-            outputPtr[idx + 1] = bg;
-            outputPtr[idx + 2] = bb;
-            outputPtr[idx + 3] = alpha;
+            outputPtr[idx2] = br;
+            outputPtr[idx2 + 1] = bg;
+            outputPtr[idx2 + 2] = bb;
+            outputPtr[idx2 + 3] = alpha; // Preserve original alpha
 
-            var skiaColor = Color.FromArgb(alpha, bb, bg, br);
+            // Only count opaque pixels
+            var skiaColor = Color.FromArgb(255, bb, bg, br);
             globalColorCounts.AddOrUpdate(skiaColor, 1, (key, count) => count + 1);
         });
 
         return (outputBitmap, new Dictionary<Color, int>(globalColorCounts));
     }
 
-    private unsafe float[][] ExtractPixels(SKBitmap bitmap, bool useLAB)
+    /// <summary>
+    /// Extracts pixel color data and alpha values from a bitmap.
+    /// </summary>
+    private unsafe (float[][] pixels, byte[] alphaValues) ExtractPixelsWithAlpha(SKBitmap bitmap, bool useLAB)
     {
         int width = bitmap.Width;
         int height = bitmap.Height;
+        int totalPixels = width * height;
 
-        var pixels = new float[width * height][];
+        var pixels = new float[totalPixels][];
+        var alphaValues = new byte[totalPixels];
         var srcPtr = (byte*)bitmap.GetPixels().ToPointer();
 
         Parallel.For(0, height, row =>
@@ -103,20 +126,24 @@ public class MedianCut
                 byte b = srcPtr[idx];
                 byte g = srcPtr[idx + 1];
                 byte r = srcPtr[idx + 2];
+                byte a = srcPtr[idx + 3];
+
+                int pixelIndex = row * width + col;
+                alphaValues[pixelIndex] = a;
 
                 if (useLAB)
                 {
                     var lab = LabHelper.RgbToLab(r, g, b);
-                    pixels[row * width + col] = [lab[0], lab[1], lab[2]];
+                    pixels[pixelIndex] = [lab[0], lab[1], lab[2]];
                 }
                 else
                 {
-                    pixels[row * width + col] = [b, g, r];
+                    pixels[pixelIndex] = [b, g, r];
                 }
             }
         });
 
-        return pixels;
+        return (pixels, alphaValues);
     }
 
     private (List<float[]>, List<float[]>) SplitBin(List<float[]> bin)

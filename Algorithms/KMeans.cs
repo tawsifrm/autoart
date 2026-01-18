@@ -19,10 +19,10 @@ public class KMeans(int clusters, int iterations)
 
     public (SKBitmap ClusteredBitmap, Dictionary<Color, int> ColorCounts) ApplyKMeans(SKBitmap bitmap, bool LAB = false)
     {
-        var pixels = ExtractPixels(bitmap, LAB);
+        var (pixels, alphaValues) = ExtractPixelsWithAlpha(bitmap, LAB);
         var clusteredPixels = PerformKMeans(pixels, clusters, iterations, LAB);
         var colorCounts = new Dictionary<Color, int>();
-        var clusteredBitmap = ClusterBitmap(clusteredPixels, bitmap.Width, bitmap.Height, LAB, colorCounts);
+        var clusteredBitmap = ClusterBitmap(clusteredPixels, bitmap.Width, bitmap.Height, LAB, colorCounts, alphaValues);
         return (clusteredBitmap, colorCounts);
     }
 
@@ -40,8 +40,8 @@ public class KMeans(int clusters, int iterations)
         int[] labels;
         int actualSuperPixelCount = seeds.Generate(bitmap, out labels);
 
-        // 2. Convert to working colour space.
-        var pixels = ExtractPixels(bitmap, LAB);
+        // 2. Convert to working colour space, preserving alpha values.
+        var (pixels, alphaValues) = ExtractPixelsWithAlpha(bitmap, LAB);
 
         // 3. Compute mean colour for every super-pixel.
         var channelCount = pixels[0].Length;
@@ -72,13 +72,17 @@ public class KMeans(int clusters, int iterations)
             clusteredPixels[i] = clusteredSuperPixelColours[labels[i]];
         }
 
-        // 6. Build bitmap and colour histogram.
+        // 6. Build bitmap and colour histogram, preserving original alpha values.
         var colorCounts = new Dictionary<Color, int>();
-        var clusteredBitmap = ClusterBitmap(clusteredPixels, bitmap.Width, bitmap.Height, LAB, colorCounts);
+        var clusteredBitmap = ClusterBitmap(clusteredPixels, bitmap.Width, bitmap.Height, LAB, colorCounts, alphaValues);
         return (clusteredBitmap, colorCounts);
     }
 
-    private unsafe float[][] ExtractPixels(SKBitmap bitmap, bool LAB)
+    /// <summary>
+    /// Extracts pixel color data and alpha values from a bitmap.
+    /// Alpha is preserved separately to maintain transparency information.
+    /// </summary>
+    private unsafe (float[][] pixels, byte[] alphaValues) ExtractPixelsWithAlpha(SKBitmap bitmap, bool LAB)
     {
         int width = bitmap.Width;
         int height = bitmap.Height;
@@ -86,6 +90,7 @@ public class KMeans(int clusters, int iterations)
 
         var srcPtr = (byte*)bitmap.GetPixels().ToPointer();
         var pixels = new float[totalPixels][];
+        var alphaValues = new byte[totalPixels];
 
         Parallel.For(0, totalPixels, i =>
         {
@@ -93,13 +98,14 @@ public class KMeans(int clusters, int iterations)
             float r = srcPtr[idx + 2];
             float g = srcPtr[idx + 1];
             float b = srcPtr[idx];
+            alphaValues[i] = srcPtr[idx + 3];
 
-            pixels[i] = LAB 
-                ? LabHelper.RgbToLab(r, g, b) 
+            pixels[i] = LAB
+                ? LabHelper.RgbToLab(r, g, b)
                 : new[] { r, g, b };
         });
 
-        return pixels;
+        return (pixels, alphaValues);
     }
 
     private float[][] PerformKMeans(float[][] pixels, int clusterCount, int maxIterations, bool LAB)
@@ -236,13 +242,30 @@ public class KMeans(int clusters, int iterations)
         return closest;
     }
 
-    private unsafe SKBitmap ClusterBitmap(float[][] clusteredPixels, int width, int height, bool LAB, Dictionary<Color, int> colorCounts)
+    /// <summary>
+    /// Builds the output bitmap from clustered pixels, preserving original alpha values.
+    /// Only opaque pixels are included in the color counts - transparent pixels are excluded.
+    /// </summary>
+    private unsafe SKBitmap ClusterBitmap(float[][] clusteredPixels, int width, int height, bool LAB, Dictionary<Color, int> colorCounts, byte[] alphaValues)
     {
         var outputBitmap = new SKBitmap(width, height);
         var outputPtr = (byte*)outputBitmap.GetPixels().ToPointer();
 
         Parallel.For(0, clusteredPixels.Length, i =>
         {
+            byte alpha = alphaValues[i];
+
+            // Preserve transparency - transparent pixels stay transparent
+            if (alpha == 0)
+            {
+                int idx = i * 4;
+                outputPtr[idx] = 0;
+                outputPtr[idx + 1] = 0;
+                outputPtr[idx + 2] = 0;
+                outputPtr[idx + 3] = 0;
+                return;
+            }
+
             float r, g, b;
 
             if (LAB)
@@ -259,14 +282,15 @@ public class KMeans(int clusters, int iterations)
                 b = clusteredPixels[i][2];
             }
 
-            int idx = i * 4;
-            outputPtr[idx] = (byte)Math.Clamp(b, 0, 255);
-            outputPtr[idx + 1] = (byte)Math.Clamp(g, 0, 255);
-            outputPtr[idx + 2] = (byte)Math.Clamp(r, 0, 255);
-            outputPtr[idx + 3] = 255;
+            int idx2 = i * 4;
+            outputPtr[idx2] = (byte)Math.Clamp(b, 0, 255);
+            outputPtr[idx2 + 1] = (byte)Math.Clamp(g, 0, 255);
+            outputPtr[idx2 + 2] = (byte)Math.Clamp(r, 0, 255);
+            outputPtr[idx2 + 3] = alpha; // Preserve original alpha
 
-            var color = Color.FromArgb(255, (byte)Math.Clamp(r, 0, 255), 
-                                       (byte)Math.Clamp(g, 0, 255), 
+            // Only count opaque pixels in color dictionary
+            var color = Color.FromArgb(255, (byte)Math.Clamp(r, 0, 255),
+                                       (byte)Math.Clamp(g, 0, 255),
                                        (byte)Math.Clamp(b, 0, 255));
             lock (colorCounts)
             {
